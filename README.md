@@ -1,2 +1,2 @@
 # ua-mern-2425
-Proyecto de la asignatura UA Web del grado de Ingeniería Multimedia
+_Desarrollo de una Plataforma de Gestión de Assets para una Empresa de Videojuegos_
