@@ -1,0 +1,30 @@
+{
+  "name": "ua-mern-2425",
+  "version": "1.0.0",
+  "description": "Plataforma de gestión de Assets UA Web",
+  "homepage": "https://github.com/danilokev/ua-mern-2425#readme",
+  "bugs": {
+    "url": "https://github.com/danilokev/ua-mern-2425/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danilokev/ua-mern-2425.git"
+  },
+  "license": "MIT",
+  "author": "",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
