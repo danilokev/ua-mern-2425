@@ -14,11 +14,12 @@
   "author": "",
   "type": "commonjs",
   "main": "server.js",
-  "scripts": {
-    "start": "node backend/server.js",
-    "server": "nodemon backend/server.js",
-    "client": "npm start --prefix frontend"
-  },
+"scripts": {
+  "start": "node backend/server.js",
+  "server": "nodemon backend/server.js",
+  "client": "npm start --prefix frontend",
+  "dev": "concurrently \"npm run server\" \"npm run client\""
+},
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
@@ -29,6 +30,7 @@
     "mongoose": "^8.10.0"
   },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "nodemon": "^3.1.9"
   }
 }
