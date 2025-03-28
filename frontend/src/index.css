@@ -1,16 +1,70 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
+/* Layout principal para sticky footer */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Reset básico */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Poppins', sans-serif;
-  height: 100vh;
+/* Estructura del contenido principal */
+.container {
+  flex: 1; /* Esto hace que crezca y empuje el footer hacia abajo */
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
 }
 
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #e6e6e6;
+  margin-bottom: 60px;
+}
+
+.header ul {
+  display: flex;
+  align-items: center;
+}
+
+.header ul li {
+  margin-left: 20px;
+}
+
+.header ul li a {
+  display: flex;
+  align-items: center;
+  color: #000;
+  text-decoration: none;
+}
+
+.header ul li a:hover {
+  color: #777;
+}
+
+.header ul li a svg {
+  margin-right: 5px;
+}
+
+/* Tipografía */
 a {
   text-decoration: none;
   color: #000;
@@ -28,53 +82,12 @@ li {
   line-height: 2.2;
 }
 
-h1,
-h2,
-h3 {
+h1, h2, h3 {
   font-weight: 600;
   margin-bottom: 10px;
 }
 
-.container {
-  width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 0 20px;
-  text-align: center;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 0;
-  border-bottom: 1px solid #e6e6e6;
-  margin-bottom: 60px;
-}
-
-.header ul {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.header ul li {
-  margin-left: 20px;
-}
-
-.header ul li a {
-  display: flex;
-  align-items: center;
-}
-
-.header ul li a:hover {
-  color: #777;
-}
-
-.header ul li a svg {
-  margin-right: 5px;
-}
-
+/* Página principal */
 .heading {
   font-size: 2rem;
   font-weight: 700;
@@ -86,30 +99,8 @@ h3 {
   color: #828282;
 }
 
-.goals {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-
-.goal {
-  background-color: #f4f4f4;
-  margin: 10px 0;
-  padding: 20px 0 10px;
-  position: relative;
-}
-
-.goal .close {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  cursor: pointer;
-  border: none;
-  background: none;
-}
-
-.form,
-.content {
+/* Formulario y contenido */
+.form, .content {
   width: 70%;
   margin: 0 auto;
 }
@@ -132,9 +123,10 @@ h3 {
 .form-group label {
   text-align: left;
   display: block;
-  margin: 0 0 5px 3px;
+  margin-bottom: 5px;
 }
 
+/* Botones */
 .btn {
   padding: 10px 20px;
   border: 1px solid #000;
@@ -144,8 +136,6 @@ h3 {
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  text-align: center;
-  appearance: button;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,6 +159,30 @@ h3 {
   transform: scale(0.98);
 }
 
+/* Goals */
+.goals {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.goal {
+  background-color: #f4f4f4;
+  margin: 10px 0;
+  padding: 20px 0 10px;
+  position: relative;
+}
+
+.goal .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* Spinner */
 .loadingSpinnerContainer {
   position: fixed;
   top: 0;
@@ -192,14 +206,47 @@ h3 {
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
+/* Footer */
+.footer {
+  background-color: #ddd;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.footer-left,
+.footer-right {
+  flex: 1;
+  min-width: 100px;
+}
+
+.footer-center {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.footer-logo {
+  width: 60px;
+  margin-bottom: 10px;
+}
+
+.footer-icons a {
+  margin: 0 8px;
+  font-size: 20px;
+  color: black;
+  text-decoration: none;
+}
+
+/* Responsive */
 @media (max-width: 600px) {
   .form {
     width: 90%;
@@ -211,5 +258,10 @@ h3 {
 
   .heading p {
     font-size: 1.5rem;
+  }
+
+  .footer {
+    flex-direction: column;
+    gap: 10px;
   }
 }

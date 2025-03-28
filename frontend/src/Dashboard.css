@@ -1,0 +1,74 @@
+.dashboard {
+    padding: 20px;
+  }
+  
+  .section-heading {
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  
+  .categories {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin-bottom: 40px;
+  }
+  
+  .category {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    min-width: 120px;
+    text-align: center;
+    background-color: #fff;
+  }
+  
+  .category img {
+    width: 60px;
+    margin-bottom: 10px;
+  }
+  
+  .category.selected {
+    border: 2px solid #007bff;
+    background-color: #f0f8ff;
+  }
+  
+  .asset-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  .assets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 20px;
+    justify-items: center;
+  }
+  
+  .asset-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 140px;
+  }
+  
+  .asset-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  
+  .asset-card .tag {
+    display: inline-block;
+    background-color: #eee;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
