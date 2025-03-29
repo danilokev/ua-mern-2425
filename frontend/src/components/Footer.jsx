@@ -1,21 +1,27 @@
-import '../index.css'
+import { FaTwitter, FaInstagram, FaYoutube, FaGithub } from 'react-icons/fa';
 
 function Footer() {
   return (
-    <footer className="footer">
+    <footer className="footer" role="contentinfo">
       <div className="footer-left">
-        <p>@2025 MMZG</p>
+        <p>&copy; 2025 MMZG</p>
       </div>
-
       <div className="footer-center">
-        <div className="footer-icons">
-          <a href="#"><i className="fa-brands fa-x-twitter"></i></a>
-          <a href="#"><i className="fa-brands fa-instagram"></i></a>
-          <a href="#"><i className="fa-brands fa-youtube"></i></a>
-          <a href="#"><i className="fa-brands fa-linkedin"></i></a>
-        </div>
+        <nav className="footer-icons" aria-label="Social Media Links">
+          <a href="#" aria-label="Twitter">
+            <FaTwitter />
+          </a>
+          <a href="#" aria-label="Instagram">
+            <FaInstagram />
+          </a>
+          <a href="#" aria-label="YouTube">
+            <FaYoutube />
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <FaGithub />
+          </a>
+        </nav>
       </div>
-
       <div className="footer-right">
         <p>© All rights reserved</p>
       </div>

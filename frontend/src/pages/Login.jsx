@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FaSignInAlt } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { login, reset } from '../features/auth/authSlice';
 import Spinner from '../components/Spinner';
@@ -56,47 +56,48 @@ function Login() {
   }
 
   return (
-    <>
-      <section className='heading'>
-        <h1>
-          <FaSignInAlt /> Login
-        </h1>
-        <p>Login and start setting goals</p>
-      </section>
-
-      <section className='form'>
-        <form onSubmit={onSubmit}>
-          <div className='form-group'>
-            <input
-              type='email'
-              className='form-control'
-              id='email'
-              name='email'
-              value={email}
-              placeholder='Enter your email'
-              onChange={onChange}
-              required
-            />
-          </div>
-          <div className='form-group'>
-            <input
-              type='password'
-              className='form-control'
-              id='password'
-              name='password'
-              value={password}
-              placeholder='Enter your password'
-              onChange={onChange}
-              required
-            />
-          </div>
-
-          <div className='form-group'>
-            <button type='submit' className='btn btn-block'>Login</button>
-          </div>
-        </form>
-      </section>
-    </>
+    <main className='min-h-screen'>
+      <div className='form-container'>
+        <section className='heading'>
+          <h1>Iniciar sesión</h1>
+          <p>Accede a tu cuenta y gestiona los assets de tus proyectos de videojuegos</p>
+        </section>
+        <section className='form'>
+          <form onSubmit={onSubmit}>
+            <div className='form-group'>
+              <label htmlFor="email">Correo electrónico:</label>
+              <input
+                type='email'
+                className='form-control'
+                id='email'
+                name='email'
+                value={email}
+                onChange={onChange}
+                required
+              />
+            </div>
+            <div className='form-group'>
+              <label htmlFor="password">Contraseña:</label>
+              <input
+                type='password'
+                className='form-control'
+                id='password'
+                name='password'
+                value={password}
+                onChange={onChange}
+                required
+              />
+            </div>
+            <div className='form-group'>
+              <button type='submit' className='btn btn-block'>Iniciar sesión</button>
+            </div>
+          </form>
+          <p className='form-footer'>
+            ¿No tienes una cuenta? <Link to='/register'>Regístrate</Link>
+          </p>
+        </section>
+      </div>
+    </main>
   );
 }
 

@@ -11,8 +11,8 @@ function App() {
   return (
     <>
       <Router>
-        < div className='container'>
-          <Header />
+        <Header />
+        <div className='container'>
           <Routes>
             <Route path='/' element={<Dashboard />} />
             <Route path='/login' element={<Login />} />
@@ -21,10 +21,7 @@ function App() {
         </div>
         <Footer />
       </Router>
-
       <ToastContainer />
-
-
     </>
   );
 }
