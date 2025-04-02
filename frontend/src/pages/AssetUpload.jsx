@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import '../styles/AssetUpload.css'; // Crea o ajusta este archivo para los estilos
 
 function AssetUpload() {
   const [formData, setFormData] = useState({

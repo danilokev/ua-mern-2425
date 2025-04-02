@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout, reset } from '../features/auth/authSlice'
 import { useState } from 'react'
-import logo from '../assets/logo_b.png' 
+import logo from '../assets/logo_b.png'
 
 function Header() {
   const navigate = useNavigate()
@@ -44,19 +44,19 @@ function Header() {
         </p>
       </form>
       <ul>
-        {user && (
-          <li>
-            <Link to="/upload">
-              <FaUpload /> Subir Asset
-            </Link>
-          </li>
-        )}
         {user ? (
+          <>
           <li>
-            <button className='btn-logout' onClick={onLogout}>
-              <FaSignOutAlt /> Cerrar sesión
-            </button>
-          </li>
+              <Link to='/profile'>
+                <FaUser /> Mi perfil
+              </Link>
+            </li>
+            <li>
+              <button className='btn-logout' onClick={onLogout}>
+                <FaSignOutAlt /> Cerrar sesión
+              </button>
+            </li>
+          </>
         ) : (
           <>
             <li>

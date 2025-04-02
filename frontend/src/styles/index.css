@@ -96,6 +96,38 @@ body {
   }
 }
 
+/* Sidebar */
+.sidebar-layout {
+  display: flex;
+  gap: 2em;
+  min-height: calc(100vh - 6em); 
+}
+
+.sidebar-main {
+  padding: 1em;
+  border-right: 1px solid var(--border-color);
+}
+
+.sidebar-container {
+  margin-top: 1em;
+  border-right: none !important;
+
+  p {
+    margin-bottom: 1em;
+    font-size: 18px;
+  }
+  
+  > div {
+    background-color: var(--primary-background-color);
+  }
+
+  .sidebar-menu__item > a {
+    &:hover {
+      background-color: var(--hover-background-color);
+    }
+  }
+}
+
 /* Formularios login, registro */
 .form-container {
   background-color: var(--secondary-background-color);
