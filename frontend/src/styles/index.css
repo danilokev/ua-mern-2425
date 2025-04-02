@@ -11,6 +11,12 @@ body {
 /* Estructura del contenido */
 .container {
   padding: 5em 2em;
+  /* Para el sticky footer, se establece el flex-grow en el contenedor principal */
+  flex: 1;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 /* Header */
@@ -20,13 +26,11 @@ body {
   align-items: center;
   padding: 1em 4em;
   border-bottom: 1px solid var(--border-color);
+}
 
-  .logo {
-    > a {
-      color: var(--primary-text-color);
-      text-decoration: none;
-    }
-  }
+.header .logo > a {
+  color: var(--primary-text-color);
+  text-decoration: none;
 }
 
 .header ul {
@@ -42,12 +46,12 @@ body {
   color: var(--primary-text-color);
   text-decoration: none;
   background-color: var(--accent-color);
-  padding: .5em 1em;
-  border-radius: .5em;
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+}
 
-  &:hover {
-    background-color: var(--hover-accent-color);
-  }
+.header ul li a:hover {
+  background-color: var(--hover-accent-color);
 }
 
 .header ul li a svg {
@@ -57,43 +61,43 @@ body {
 /* Barra de búsqueda */
 .search-input {
   display: flex;
-  gap: .2em;
+  gap: 0.2em;
+}
 
-  > input {
-    padding: .3em 1.25em;
-    border: 2px solid var(--border-color);
-    background-color: var(--secondary-background-color);
-    color: var(--primary-text-color);
-    width: 28em;
+.search-input > input {
+  padding: 0.3em 1.25em;
+  border: 2px solid var(--border-color);
+  background-color: var(--secondary-background-color);
+  color: var(--primary-text-color);
+  width: 28em;
+}
 
-    &:hover {
-      border-color: var(--accent-color);
-    }
+.search-input > input:hover {
+  border-color: var(--accent-color);
+}
 
-    &:focus {
-      outline: none;
-      border-color: var(--accent-color);
-    }
-  }
+.search-input > input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
 
-  > button {
-    background-color: var(--accent-color);
-    color: var(--primary-text-color);
-    padding: .5em 1em;
-    border: none;
-    cursor: pointer;
+.search-input > button {
+  background-color: var(--accent-color);
+  color: var(--primary-text-color);
+  padding: 0.5em 1em;
+  border: none;
+  cursor: pointer;
+}
 
-    &:hover {
-      background-color: var(--hover-accent-color);
-    }
-  }
+.search-input > button:hover {
+  background-color: var(--hover-accent-color);
 }
 
 /* Formularios login, registro */
 .form-container {
   background-color: var(--secondary-background-color);
   padding: 2em;
-  border-radius: .5em;
+  border-radius: 0.5em;
   box-shadow: 0px 4px 10px var(--box-shadow-color);
   width: 100%;
   max-width: 37.5em;
@@ -116,16 +120,16 @@ body {
   border: 2px solid var(--border-color);
   border-radius: 5px;
   margin-bottom: 10px;
-  transition: border-color 0.3s ease, background-color 0.3s ease; 
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
 
-  &:hover {
-    border-color: var(--accent-color);
-  }
+.form-group input:hover {
+  border-color: var(--accent-color);
+}
 
-  &:focus {
-    outline: none;
-    border-color: var(--accent-color);
-  }
+.form-group input:focus {
+  outline: none;
+  border-color: var(--accent-color);
 }
 
 .form-group label {
@@ -136,29 +140,30 @@ body {
 
 .form-footer {
   text-align: center;
+}
 
-  > a {
-    color: var(--primary-text-color);
-    font-weight: 700;
+.form-footer > a {
+  color: var(--primary-text-color);
+  font-weight: 700;
+}
 
-    &:hover {
-      text-decoration: none;
-    }
-  }
+.form-footer > a:hover {
+  text-decoration: none;
 }
 
 /* Encabezado de los formularios */
 .heading {
   margin-bottom: 50px;
-  > h1 {
-    color: var(--primary-text-color);
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-  }
+}
 
-  > p {
-    font-weight: 500;
-  }
+.heading > h1 {
+  color: var(--primary-text-color);
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.heading > p {
+  font-weight: 500;
 }
 
 .heading p {
@@ -169,16 +174,16 @@ body {
 .btn {
   padding: 1em;
   border: none;
-  border-radius: .5em;
+  border-radius: 0.5em;
   background-color: var(--accent-color);
   color: var(--primary-text-color);
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
+}
 
-  &:hover {
-    background-color: var(--hover-accent-color);
-  }
+.btn:hover {
+  background-color: var(--hover-accent-color);
 }
 
 .btn-logout {
@@ -187,14 +192,14 @@ body {
   background-color: var(--accent-color);
   color: var(--primary-text-color);
   border: none;
-  border-radius: .5em;
-  padding: .5em 1em;
+  border-radius: 0.5em;
+  padding: 0.5em 1em;
   cursor: pointer;
-  gap: .2em;
+  gap: 0.2em;
+}
 
-  &:hover {
-    background-color: var(--hover-accent-color);
-  }
+.btn-logout:hover {
+  background-color: var(--hover-accent-color);
 }
 
 .btn svg {
@@ -209,6 +214,13 @@ body {
 .btn-block {
   width: 100%;
   margin-bottom: 20px;
+}
+
+/* Logo imagen */
+.logo-img {
+  height: 160px;
+  width: auto;
+  object-fit: contain;
 }
 
 /* Goals */
@@ -295,17 +307,169 @@ body {
   margin: 0 8px;
   font-size: 20px;
   color: var(--primary-text-color);
-  transition: color .3s ease;
+  transition: color 0.3s ease;
+}
 
-  &:hover {
-    color: var(--accent-color);
+.footer-icons a:hover {
+  color: var(--accent-color);
+}
+
+/* Responsive: pantallas medianas */
+@media (max-width: 900px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+    padding: 1em 2em;
+    gap: 1em;
+  }
+
+  .search-input > input {
+    width: 100%;
+    max-width: 90vw;
+  }
+
+  .search-input {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-logout {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .form-container {
+    padding: 1.5em;
+  }
+
+  .heading > h1 {
+    font-size: 2rem;
+  }
+
+  .heading > p {
+    font-size: 1rem;
   }
 }
 
-/* Responsive */
+/* Responsive: pantallas pequeñas */
 @media (max-width: 600px) {
+  .container {
+    padding: 2em 1em;
+  }
+
+  .header ul {
+    flex-direction: column;
+    gap: 0.5em;
+  }
+
+  .form-container {
+    width: 95%;
+    padding: 1em;
+  }
+
+  .form-group input {
+    padding: 0.8em;
+  }
+
+  .search-input {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-input > button {
+    width: 100%;
+    margin-top: 0.5em;
+  }
+
+  .goals {
+    grid-template-columns: 1fr;
+  }
+
   .footer {
     flex-direction: column;
-    gap: 10px;
+    gap: 1em;
+    text-align: center;
+  }
+
+  .footer-center {
+    order: -1; /* El logo se muestra primero */
+  }
+}
+
+
+/* Estilos para la Help Page */
+.help-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5em 1em;
+  background-color: var(--secondary-background-color, #f9f9f9);
+  color: var(--primary-text-color, #333);
+  text-align: center;
+}
+
+.help-page h2 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.help-grid {
+  display: grid;
+  /* Se generan tantas columnas como quepan, cada una con un mínimo de 160px y máximo de 1fr */
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 2em;
+  margin-top: 2em;
+  padding: 0 1em;
+}
+
+.help-column {
+  background-color: var(--tertiary-background-color, #fff);
+  padding: 1em;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.help-column h3 {
+  margin-bottom: 0.8em;
+  font-size: 1.2rem;
+  color: var(--accent-color, #007BFF);
+  border-bottom: 2px solid var(--accent-color, #007BFF);
+  padding-bottom: 0.3em;
+}
+
+.help-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.help-column li {
+  margin-bottom: 0.6em;
+}
+
+.help-column li a {
+  color: var(--primary-text-color, #333);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+.help-column li a:hover {
+  color: var(--accent-color, #007BFF);
+  text-decoration: underline;
+}
+
+/* Responsive: para pantallas medianas */
+@media (max-width: 900px) {
+  .help-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+}
+
+/* Responsive: para pantallas pequeñas */
+@media (max-width: 600px) {
+  .help-grid {
+    grid-template-columns: 1fr;
   }
 }

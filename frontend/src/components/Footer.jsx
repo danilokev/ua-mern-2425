@@ -1,4 +1,6 @@
 import { FaTwitter, FaInstagram, FaYoutube, FaGithub } from 'react-icons/fa';
+import { Link } from 'react-router-dom'
+import { FaQuestionCircle } from 'react-icons/fa'
 
 function Footer() {
   return (
@@ -22,6 +24,13 @@ function Footer() {
           </a>
         </nav>
       </div>
+
+      <div className="footer-help">
+        <Link to="/help">
+          <FaQuestionCircle size={24} />
+        </Link>
+      </div>
+
       <div className="footer-right">
         <p>© All rights reserved</p>
       </div>

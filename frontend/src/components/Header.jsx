@@ -3,12 +3,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout, reset } from '../features/auth/authSlice'
 import { useState } from 'react'
+import logo from '../assets/logo_b.png' // Asegúrate de que logo.png esté en src/
 
 function Header() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('')
 
   const onLogout = () => {
     dispatch(logout())
@@ -16,48 +17,49 @@ function Header() {
     navigate('/')
   }
 
-  const handleSearch = (evt) => {
-    evt.preventDefault()
+  const handleSearch = (e) => {
+    e.preventDefault()
     console.log('Search term:', searchTerm)
+    // Puedes conectar esto con lógica de búsqueda real más adelante
   }
 
   return (
     <header className='header'>
       <div className='logo'>
-        <Link to='/'>LOGO</Link>
+        <Link to='/'>
+          <img src={logo} alt="MolamazoGames" className='logo-img' />
+        </Link>
       </div>
-      <>
-        <form onSubmit={handleSearch}>
-          <p className='search-input'>
-            <input
-              type="text"
-              placeholder='Buscar assets...'
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <button type='submit' className='search-btn'>
-              <FaSearch />
-            </button>
-          </p>
-        </form>
-      </>
+
+      <form onSubmit={handleSearch} className='search-bar'>
+        <input
+          type="search"
+          placeholder="Buscar assets..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button type="submit">
+          <FaSearch />
+        </button>
+      </form>
+
       <ul>
         {user ? (
           <li>
-            <button className='btn-logout' onClick={onLogout}>
-              <FaSignOutAlt /> Cerrar sesión
+            <button className='btn' onClick={onLogout}>
+              <FaSignOutAlt /> Logout
             </button>
           </li>
         ) : (
           <>
             <li>
               <Link to='/login'>
-                <FaSignInAlt /> Iniciar sesión
+                <FaSignInAlt /> Login
               </Link>
             </li>
             <li>
               <Link to='/register'>
-                <FaUser /> Registrarse
+                <FaUser /> Register
               </Link>
             </li>
           </>
