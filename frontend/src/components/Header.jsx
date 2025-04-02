@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout, reset } from '../features/auth/authSlice'
 import { useState } from 'react'
-import logo from '../assets/logo_b.png' // Asegúrate de que logo_b.png esté en src/assets/
+import logo from '../assets/logo_b.png' 
 
 function Header() {
   const navigate = useNavigate()
@@ -27,22 +27,22 @@ function Header() {
     <header className='header'>
       <div className='logo'>
         <Link to='/'>
-          <img src={logo} alt="MolamazoGames" className='logo-img' />
+          <img src={logo} alt="Logo de la empresa MolaMazoGames" className='logo-img' />
         </Link>
       </div>
-
-      <form onSubmit={handleSearch} className='search-bar'>
-        <input
-          type="search"
-          placeholder="Buscar assets..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button type="submit">
-          <FaSearch />
-        </button>
+      <form onSubmit={handleSearch}>
+        <p className='search-input'>
+          <input
+            type="text"
+            placeholder='Buscar assets...'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button type='submit' className='search-btn'>
+            <FaSearch />
+          </button>
+        </p>
       </form>
-
       <ul>
         {user && (
           <li>
@@ -53,20 +53,20 @@ function Header() {
         )}
         {user ? (
           <li>
-            <button className='btn' onClick={onLogout}>
-              <FaSignOutAlt /> Logout
+            <button className='btn-logout' onClick={onLogout}>
+              <FaSignOutAlt /> Cerrar sesión
             </button>
           </li>
         ) : (
           <>
             <li>
               <Link to='/login'>
-                <FaSignInAlt /> Login
+                <FaSignInAlt /> Iniciar sesión
               </Link>
             </li>
             <li>
               <Link to='/register'>
-                <FaUser /> Register
+                <FaUser /> Registrarse
               </Link>
             </li>
           </>

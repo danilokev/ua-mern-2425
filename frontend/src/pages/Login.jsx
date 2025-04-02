@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { FaSignInAlt } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -56,7 +55,7 @@ function Login() {
   }
 
   return (
-    <main className='min-h-screen'>
+    <main className='min-h-screen main-container'>
       <div className='form-container'>
         <section className='heading'>
           <h1>Iniciar sesión</h1>

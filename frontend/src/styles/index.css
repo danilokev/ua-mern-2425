@@ -9,14 +9,12 @@ body {
 }
 
 /* Estructura del contenido */
-.container {
-  padding: 5em 2em;
-  /* Para el sticky footer, se establece el flex-grow en el contenedor principal */
-  flex: 1;
-  width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
-  text-align: center;
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.main-container {
+  padding: 5em 0;
 }
 
 /* Header */
@@ -24,11 +22,16 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1em 4em;
+  padding: .5em 4em;
   border-bottom: 1px solid var(--border-color);
 }
 
-.header .logo > a {
+.logo-img {
+  width: 100%;
+  max-height: 4.25em;
+}
+
+.header .logo>a {
   color: var(--primary-text-color);
   text-decoration: none;
 }
@@ -61,51 +64,47 @@ body {
 /* Barra de búsqueda */
 .search-input {
   display: flex;
-  gap: 0.2em;
-}
+  gap: .2em;
 
-.search-input > input {
-  padding: 0.3em 1.25em;
-  border: 2px solid var(--border-color);
-  background-color: var(--secondary-background-color);
-  color: var(--primary-text-color);
-  width: 28em;
-}
+  >input {
+    padding: .3em 1.25em;
+    border: 2px solid var(--border-color);
+    background-color: var(--secondary-background-color);
+    color: var(--primary-text-color);
+    width: 28em;
 
-.search-input > input:hover {
-  border-color: var(--accent-color);
-}
+    &:hover {
+      border-color: var(--accent-color);
+    }
 
-.search-input > input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-}
+    &:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+  }
 
-.search-input > button {
-  background-color: var(--accent-color);
-  color: var(--primary-text-color);
-  padding: 0.5em 1em;
-  border: none;
-  cursor: pointer;
-}
+  >button {
+    background-color: var(--accent-color);
+    color: var(--primary-text-color);
+    padding: .5em 1em;
+    border: none;
+    cursor: pointer;
 
-.search-input > button:hover {
-  background-color: var(--hover-accent-color);
+    &:hover {
+      background-color: var(--hover-accent-color);
+    }
+  }
 }
 
 /* Formularios login, registro */
 .form-container {
   background-color: var(--secondary-background-color);
   padding: 2em;
-  border-radius: 0.5em;
+  border-radius: .5em;
   box-shadow: 0px 4px 10px var(--box-shadow-color);
   width: 100%;
   max-width: 37.5em;
   margin: 0 auto;
-}
-
-.min-h-screen {
-  min-height: 100vh;
 }
 
 .form-group {
@@ -120,16 +119,16 @@ body {
   border: 2px solid var(--border-color);
   border-radius: 5px;
   margin-bottom: 10px;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
-}
+  transition: border-color .3s ease;
 
-.form-group input:hover {
-  border-color: var(--accent-color);
-}
+  &:hover {
+    border-color: var(--accent-color);
+  }
 
-.form-group input:focus {
-  outline: none;
-  border-color: var(--accent-color);
+  &:focus {
+    outline: none;
+    border-color: var(--accent-color);
+  }
 }
 
 .form-group label {
@@ -140,30 +139,31 @@ body {
 
 .form-footer {
   text-align: center;
-}
 
-.form-footer > a {
-  color: var(--primary-text-color);
-  font-weight: 700;
-}
+  >a {
+    color: var(--anchor-color);
+    font-weight: 700;
+    text-decoration: none;
 
-.form-footer > a:hover {
-  text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 /* Encabezado de los formularios */
 .heading {
   margin-bottom: 50px;
-}
 
-.heading > h1 {
-  color: var(--primary-text-color);
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-}
+  >h1 {
+    color: var(--primary-text-color);
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+  }
 
-.heading > p {
-  font-weight: 500;
+  >p {
+    font-weight: 500;
+  }
 }
 
 .heading p {
@@ -200,27 +200,6 @@ body {
 
 .btn-logout:hover {
   background-color: var(--hover-accent-color);
-}
-
-.btn svg {
-  margin-right: 8px;
-}
-
-.btn-reverse {
-  background: #fff;
-  color: #000;
-}
-
-.btn-block {
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-/* Logo imagen */
-.logo-img {
-  height: 160px;
-  width: auto;
-  object-fit: contain;
 }
 
 /* Goals */
@@ -270,8 +249,13 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Footer */
@@ -313,89 +297,6 @@ body {
 .footer-icons a:hover {
   color: var(--accent-color);
 }
-
-/* Responsive: pantallas medianas */
-@media (max-width: 900px) {
-  .header {
-    flex-direction: column;
-    align-items: center;
-    padding: 1em 2em;
-    gap: 1em;
-  }
-
-  .search-input > input {
-    width: 100%;
-    max-width: 90vw;
-  }
-
-  .search-input {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .btn-logout {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .form-container {
-    padding: 1.5em;
-  }
-
-  .heading > h1 {
-    font-size: 2rem;
-  }
-
-  .heading > p {
-    font-size: 1rem;
-  }
-}
-
-/* Responsive: pantallas pequeñas */
-@media (max-width: 600px) {
-  .container {
-    padding: 2em 1em;
-  }
-
-  .header ul {
-    flex-direction: column;
-    gap: 0.5em;
-  }
-
-  .form-container {
-    width: 95%;
-    padding: 1em;
-  }
-
-  .form-group input {
-    padding: 0.8em;
-  }
-
-  .search-input {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-input > button {
-    width: 100%;
-    margin-top: 0.5em;
-  }
-
-  .goals {
-    grid-template-columns: 1fr;
-  }
-
-  .footer {
-    flex-direction: column;
-    gap: 1em;
-    text-align: center;
-  }
-
-  .footer-center {
-    order: -1; /* El logo se muestra primero */
-  }
-}
-
 
 /* Estilos para la Help Page */
 .help-page {
@@ -460,16 +361,10 @@ body {
   text-decoration: underline;
 }
 
-/* Responsive: para pantallas medianas */
-@media (max-width: 900px) {
-  .help-grid {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  }
-}
-
-/* Responsive: para pantallas pequeñas */
+/* Responsive */
 @media (max-width: 600px) {
-  .help-grid {
-    grid-template-columns: 1fr;
+  .footer {
+    flex-direction: column;
+    gap: 10px;
   }
 }

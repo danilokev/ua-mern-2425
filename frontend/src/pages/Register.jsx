@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FaUser } from 'react-icons/fa';
 import { register, reset } from '../features/auth/authSlice';
 import Spinner from '../components/Spinner';
 
@@ -61,7 +60,7 @@ function Register() {
     return <Spinner />
   }
   return (
-    <main className='min-h-screen'>
+    <main className='min-h-screen main-container'>
       <div className='form-container'>
         <section className='heading'>
           <h1>Crear cuenta</h1>

@@ -1,4 +1,5 @@
 .dashboard {
+  margin: 5em 2em;
   padding: 20px;
   background-color: var(--secondary-background-color);
 }
