@@ -202,6 +202,11 @@ body {
   background-color: var(--hover-accent-color);
 }
 
+.btn-block {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
 /* Goals */
 .goals {
   display: grid;
