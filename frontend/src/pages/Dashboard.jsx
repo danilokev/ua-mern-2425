@@ -17,28 +17,27 @@ function Dashboard() {
         <h2 id="categories-heading">Categorías</h2>
         <div className="categories">
           <article className="category">
-            <img src={logo3d} alt="" />
+            <img src={logo3d} alt="Icono 3D" />
             <h3>3D</h3>
-            <p>Texto categoría</p>
+            <p>Explora modelos y escenas 3D</p>
           </article>
 
           <article className="category">
-            <img src={logo2d} alt="" />
+            <img src={logo2d} alt="Icono 2D" />
             <h3>2D</h3>
-            <p>Texto categoría</p>
+            <p>Descubre ilustraciones y sprites</p>
           </article>
 
           <article className="category">
-            <img src={addonIcon} alt="" />
+            <img src={addonIcon} alt="Icono Add-Ons" />
             <h3>Add-Ons</h3>
-            <p>Texto categoría</p>
+            <p>Complementos y extras para tu juego</p>
           </article>
         </div>
       </section>
 
       <section aria-labelledby="new-assets-heading">
         <h2 id="new-assets-heading" className="asset-title">¡Nuevos assets, nuevas aventuras!</h2>
-
         <div className="assets-grid">
           {[...Array(4)].map((_, i) => (
             <article key={i} className="asset-card">

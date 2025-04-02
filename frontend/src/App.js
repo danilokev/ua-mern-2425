@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Help from './pages/Help';
 import Footer from './components/Footer'
+import AssetUpload from './pages/AssetUpload';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
             <Route path="/help" element={<Help />} />
+            <Route path="/upload" element={<AssetUpload />} />
           </Routes>
         </div>
         <Footer />

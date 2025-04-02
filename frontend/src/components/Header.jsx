@@ -1,9 +1,9 @@
-import { FaSignInAlt, FaSignOutAlt, FaUser, FaSearch } from 'react-icons/fa'
+import { FaSignInAlt, FaSignOutAlt, FaUser, FaSearch, FaUpload } from 'react-icons/fa'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout, reset } from '../features/auth/authSlice'
 import { useState } from 'react'
-import logo from '../assets/logo_b.png' // Asegúrate de que logo.png esté en src/
+import logo from '../assets/logo_b.png' // Asegúrate de que logo_b.png esté en src/assets/
 
 function Header() {
   const navigate = useNavigate()
@@ -20,7 +20,7 @@ function Header() {
   const handleSearch = (e) => {
     e.preventDefault()
     console.log('Search term:', searchTerm)
-    // Puedes conectar esto con lógica de búsqueda real más adelante
+    // Conecta la lógica de búsqueda real aquí
   }
 
   return (
@@ -44,6 +44,13 @@ function Header() {
       </form>
 
       <ul>
+        {user && (
+          <li>
+            <Link to="/upload">
+              <FaUpload /> Subir Asset
+            </Link>
+          </li>
+        )}
         {user ? (
           <li>
             <button className='btn' onClick={onLogout}>
