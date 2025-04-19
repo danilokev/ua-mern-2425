@@ -19,12 +19,18 @@ const assetSchema = mongoose.Schema({
     required: [true, 'Por favor añade una descripción']
   },
   image: {
-    type: String, // URL o path de la imagen
+    type: String, // Main image URL
     required: [true, 'La imagen es obligatoria']
   },
+  images: [{ // All images
+    type: String
+  }],
   file: {
-    type: String, // Ruta al archivo del asset (opcional)
-  }
+    type: String, // Main file URL
+  },
+  files: [{ // All files
+    type: String
+  }]
 });
 
 module.exports = mongoose.model('Asset', assetSchema);

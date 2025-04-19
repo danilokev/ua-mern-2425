@@ -1,12 +1,18 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
 const {
   createAsset,
   getAssets
 } = require('../controllers/assetController');
 
+const upload = multer({ storage: multer.memoryStorage() });
+
 router.route('/')
-  .get(getAssets)    // Para obtener todos los assets
-  .post(createAsset); // Para crear un nuevo asset
+  .get(getAssets)
+  .post(upload.fields([
+    { name: 'files', maxCount: 10 },
+    { name: 'images', maxCount: 5 }
+  ]), createAsset);
 
 module.exports = router;
