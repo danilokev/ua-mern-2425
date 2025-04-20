@@ -7,43 +7,43 @@ const User = require('../models/userModel')
 // @route   POST /api/users/
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body
-    
-    if(!name || !email || !password ){
-        res.status(400)
-        throw new Error('Please add all fields')
-    }
+  const { name, email, password } = req.body
 
-    // Check if user exists
-    const userExists = await User.findOne({email})
+  if (!name || !email || !password) {
+    res.status(400)
+    throw new Error('Please add all fields')
+  }
 
-    if(userExists){
-        res.status(400)
-        throw new Error('User already exists')
-    }
+  // Check if user exists
+  const userExists = await User.findOne({ email })
 
-    // Hash password
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
+  if (userExists) {
+    res.status(400)
+    throw new Error('User already exists')
+  }
 
-    // Create user
-    const user = await User.create({
-        name,
-        email,
-        password: hashedPassword
+  // Hash password
+  const salt = await bcrypt.genSalt(10)
+  const hashedPassword = await bcrypt.hash(password, salt)
+
+  // Create user
+  const user = await User.create({
+    name,
+    email,
+    password: hashedPassword
+  })
+
+  if (user) {
+    res.status(201).json({
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user._id)
     })
-
-    if(user) {
-        res.status(201).json({
-            _id: user.id,
-            name: user.name,
-            email: user.email,
-            token: generateToken(user._id)
-        })
-    } else{
-        res.status(400)
-        throw new Error('Invalid user data')
-    }
+  } else {
+    res.status(400)
+    throw new Error('Invalid user data')
+  }
 })
 
 
@@ -51,49 +51,117 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
-    const {email,password } = req.body
+  const { email, password } = req.body
 
-    // Comprueba si tiene email
-    const user = await User.findOne({email})
+  // Comprueba si tiene email
+  const user = await User.findOne({ email })
 
-    if(user && (await bcrypt.compare(password, user.password))){
-        res.json({
-            _id: user.id,
-            name: user.name,
-            email: user.email,
-            token: generateToken(user._id)
-        })
-    } else {
-        res.status(400)
-        throw new Error('Invalid credentials')
-    }
+  if (user && (await bcrypt.compare(password, user.password))) {
+    res.json({
+      _id: user.id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user._id)
+    })
+  } else {
+    res.status(400)
+    throw new Error('Invalid credentials')
+  }
 })
-
 
 // @desc    Obtiene los datos de un usuario
 // @route   GET /api/users/me
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
-    const {_id, name, email} = await User.findById(req.user.id)
+  const { _id, name, email, avatar } = await User.findById(req.user.id)
 
-    res.status(200).json({
-        id: _id,
-        name,
-        email,
-    })
+  res.status(200).json({
+    id: _id,
+    name,
+    email,
+    avatar
+  })
 })
+
+// @desc    Actualizar datos de usuario
+// @route   PUT /api/users/me
+// @access  Private
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('Usuario no encontrado');
+  }
+
+  user.name = req.body.name || user.name;
+  user.email = req.body.email || user.email;
+
+  const updatedUser = await user.save();
+
+  res.status(200).json({
+    id: updatedUser._id,
+    name: updatedUser.name,
+    email: updatedUser.email,
+    avatar: updatedUser.avatar
+  });
+});
+
+// @desc    Actualizar contraseña
+// @route   PUT /api/users/password
+// @access  Private
+const updatePassword = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+  const { currentPassword, newPassword } = req.body;
+
+  if (!(await bcrypt.compare(currentPassword, user.password))) {
+    res.status(401);
+    throw new Error('Contraseña actual incorrecta');
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(newPassword, salt);
+  await user.save();
+
+  res.status(200).json({
+    message: 'Contraseña actualizada correctamente'
+  });
+});
+
+// @desc    Actualizar avatar
+// @route   PUT /api/users/avatar
+// @access  Private
+const updateAvatar = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('Usuario no encontrado');
+  }
+
+  if (req.file) {
+    user.avatar = `/uploads/avatars/${req.file.filename}`;
+    await user.save();
+  }
+
+  res.status(200).json({
+    message: 'Avatar actualizado',
+    avatar: user.avatar
+  });
+});
 
 // Generar JWT
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d',
-    })
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: '30d',
+  })
 }
 
-
-
 module.exports = {
-    registerUser,
-    loginUser,
-    getMe
+  registerUser,
+  loginUser,
+  getMe,
+  updateUser,
+  updatePassword,
+  updateAvatar
 }

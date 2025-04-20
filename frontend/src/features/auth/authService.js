@@ -1,5 +1,4 @@
 import axios from 'axios'
-
 const API_URL = '/api/users/'
 
 // Register user
@@ -29,10 +28,49 @@ const logout = () => {
   localStorage.removeItem('user')
 }
 
+const updateProfile = async (userData, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+
+  const response = await axios.put(API_URL + 'me', userData, config)
+  return response.data
+}
+
+const updatePassword = async (passwords, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+
+  const response = await axios.put(API_URL + 'password', passwords, config)
+  return response.data
+}
+
+const updateAvatar = async (avatarFile, token) => {
+  const formData = new FormData()
+  formData.append('avatar', avatarFile)
+  
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+  }
+
+  const response = await axios.put(API_URL + 'avatar', formData, config)
+  return response.data
+}
+
 const authService = {
   register,
   login,
-  logout, 
+  logout,
+  updateAvatar,
+  updateProfile,
+  updatePassword
 }
 
 export default authService
