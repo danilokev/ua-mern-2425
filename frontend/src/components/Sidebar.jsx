@@ -1,5 +1,6 @@
-import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
-import { FaHome, FaBox, FaUpload, FaSignOutAlt, FaHistory, FaUser } from 'react-icons/fa';
+import { Sidebar, Menu, SubMenu, MenuItem } from 'react-pro-sidebar';
+import { FaHome, FaBox, FaUpload, FaSignOutAlt, 
+  FaHistory, FaUser, FaUserSlash, FaUniversalAccess } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 function SidebarComponent() {
@@ -27,6 +28,14 @@ function SidebarComponent() {
             <MenuItem className='sidebar-menu__item' component={<Link to="#" />}>
               <FaHistory /> Historial
             </MenuItem>
+            <SubMenu label="Configuración" className='sidebar-submenu'>
+              <MenuItem className='sidebar-menu__item'>
+                <FaUserSlash /> Darse de baja
+              </MenuItem>
+              <MenuItem className='sidebar-menu__item'>
+                <FaUniversalAccess /> Accesibilidad
+              </MenuItem>
+            </SubMenu>
             <MenuItem className='sidebar-menu__item'>
               <FaSignOutAlt /> Cerrar Sesión
             </MenuItem>

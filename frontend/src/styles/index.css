@@ -117,16 +117,17 @@ body {
     font-size: 18px;
   }
   
-  > div {
+  > div, a.ps-menu-button {
     background-color: var(--primary-background-color);
   }
 
-  .sidebar-menu__item > a {
+  .sidebar-menu__item > a, .ps-menu-button {
     &:hover {
       background-color: var(--hover-background-color);
     }
   }
 }
+
 
 /* Formularios login, registro */
 .form-container {
