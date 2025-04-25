@@ -99,6 +99,25 @@ export const uploadAvatar = createAsyncThunk(
   }
 )
 
+// --- Eliminar Cuenta ---
+export const deleteAccount = createAsyncThunk(
+  'auth/deleteAccount',
+  async (password, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token
+      await authService.deleteAccount(password, token)
+
+      // Limpiar localStorage y estado
+      thunkAPI.dispatch(logout())
+      thunkAPI.dispatch(reset())
+
+      return true
+    } catch (error) {
+      return thunkAPI.rejectWithValue(handleError(error))
+    }
+  }
+)
+
 // Función auxiliar para manejar errores
 const handleError = (error) => {
   return (
@@ -189,6 +208,19 @@ export const authSlice = createSlice({
         state.user.avatar = action.payload.avatar
       })
       .addCase(uploadAvatar.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.message = action.payload
+      })
+      .addCase(deleteAccount.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(deleteAccount.fulfilled, (state) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.message = 'Cuenta eliminada exitosamente'
+      })
+      .addCase(deleteAccount.rejected, (state, action) => {
         state.isLoading = false
         state.isError = true
         state.message = action.payload

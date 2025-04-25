@@ -29,7 +29,7 @@ function SidebarComponent() {
               <FaHistory /> Historial
             </MenuItem>
             <SubMenu label="Configuración" className='sidebar-submenu'>
-              <MenuItem className='sidebar-menu__item'>
+              <MenuItem className='sidebar-menu__item' component={<Link to="/delete-account" />}>
                 <FaUserSlash /> Darse de baja
               </MenuItem>
               <MenuItem className='sidebar-menu__item'>

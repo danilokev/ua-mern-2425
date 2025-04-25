@@ -150,6 +150,30 @@ const updateAvatar = asyncHandler(async (req, res) => {
   });
 });
 
+// @desc    Eliminar cuenta de usuario
+// @route   PUT /api/users/me
+// @access  Private
+const deleteUser = asyncHandler(async (req, res) => {
+  const user          = await User.findById(req.user.id);
+  const { password }  = req.body;
+
+  if (!password) {
+    res.status(400);
+    throw new Error('Por favor ingresa tu contraseña');
+  }
+
+  if (!(await bcrypt.compare(password, user.password))) {
+    res.status(401);
+    throw new Error('Contraseña incorrecta');
+  }
+
+  await user.deleteOne();
+
+  res.status(200).json({
+    message: 'Cuenta eliminada permanentemente'
+  });
+});
+
 // Generar JWT
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -163,5 +187,6 @@ module.exports = {
   getMe,
   updateUser,
   updatePassword,
-  updateAvatar
+  updateAvatar,
+  deleteUser
 }

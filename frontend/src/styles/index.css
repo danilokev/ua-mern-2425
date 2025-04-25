@@ -240,6 +240,43 @@ body {
   margin-bottom: 20px;
 }
 
+/* --- Estilos Modal Confirmación --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--primary-background-color);
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+}
+
+.modal-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+
+  .btn-danger{
+    background-color: #a52019;
+  }
+  
+  .btn-confirmation {
+    background-color: #008f39;
+  }
+}
+
 /* Goals */
 .goals {
   display: grid;

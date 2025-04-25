@@ -39,6 +39,7 @@ const updateProfile = async (userData, token) => {
   return response.data
 }
 
+// --- Actualizar contraseña ---
 const updatePassword = async (passwords, token) => {
   const config = {
     headers: {
@@ -50,10 +51,11 @@ const updatePassword = async (passwords, token) => {
   return response.data
 }
 
+// --- Actualizar Avatar Usuario ---
 const updateAvatar = async (avatarFile, token) => {
   const formData = new FormData()
   formData.append('avatar', avatarFile)
-  
+
   const config = {
     headers: {
       Authorization: `Bearer ${token}`
@@ -64,13 +66,30 @@ const updateAvatar = async (avatarFile, token) => {
   return response.data
 }
 
+// --- Eliminar Cuenta Usuario ---
+const deleteAccount = async (password, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+
+  const res = await axios.delete(API_URL + 'me', {
+    ...config,
+    data: { password }
+  })
+
+  return res.data
+}
+
 const authService = {
   register,
   login,
   logout,
   updateAvatar,
   updateProfile,
-  updatePassword
+  updatePassword,
+  deleteAccount
 }
 
 export default authService

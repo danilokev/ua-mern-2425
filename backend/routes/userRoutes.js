@@ -8,7 +8,8 @@ const {
   getMe,
   updateUser,
   updatePassword,
-  updateAvatar
+  updateAvatar,
+  deleteUser
 } = require('../controllers/userController')
 
 const { protect } = require('../middleware/authMiddleware')
@@ -38,6 +39,7 @@ router.post('/', registerUser);
 router.post('/login', loginUser);
 router.get('/me', protect, getMe);
 router.put('/me', protect, updateUser);
+router.delete('/me', protect, deleteUser);
 router.put('/password', protect, updatePassword);
 router.put('/avatar', protect, upload.single('avatar'), updateAvatar);
 

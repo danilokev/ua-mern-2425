@@ -13,6 +13,7 @@ import Help from './pages/Help';
 import AssetUpload from './pages/AssetUpload';
 import Profile from './pages/Profile'
 import AssetView from './pages/AssetView'
+import DeleteAccount from './pages/DeleteAccount'
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           }>
             <Route path='/upload' element={<AssetUpload />} />
             <Route path='/profile' element={<Profile />} />
+            <Route path='/delete-account' element={<DeleteAccount />} />
           </Route>
 
           <Route path='*' element={<div>Página no encontrada</div>} />
