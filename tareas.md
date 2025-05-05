@@ -15,7 +15,7 @@
 * `[-]` - Crear página Footer: Marcos
     - Seguir el diseño de figma.
 
-* `[-]` - Crear página Footer: Marcos
+* `[Casi]` - Implementar Dropbox: Marcos
     - Google API Drive, mirar vídeo del grupo de Discord
     
 * `[-]` - Crear página historial de descargas: Alfonso

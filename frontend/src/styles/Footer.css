@@ -1,0 +1,108 @@
+:root {
+  --bg-footer: #333339;
+  --text-footer: #ffffff;
+  --link-footer: #7ebcf2;
+  --link-hover: #5964f2;
+  --border-footer: #424348;
+}
+
+/* Contenedor principal */
+.footer {
+  background-color: var(--bg-footer);
+  color: var(--text-footer);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Zona superior: logo + 3 columnas de enlaces */
+.footer-top {
+  display: grid;
+  /* 200px fija para logo, 3 columnas que reparten el resto */
+  grid-template-columns: 200px 1fr 1fr 1fr;
+  gap: 2.5rem; /* aplica row- y column-gap */
+  padding: 2.5rem 3rem 1.5rem;
+  align-items: start;
+}
+
+/* Columna logo */
+.footer-col--logo .footer-logo {
+  width: 180px;
+  height: auto;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+/* Iconos sociales dentro de la columna logo */
+.footer-social {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.footer-social a {
+  color: var(--text-footer);
+  font-size: 1.3rem;
+  transition: color 0.2s ease;
+}
+.footer-social a:hover {
+  color: var(--link-hover);
+}
+
+/* Dirección */
+.footer-address {
+  font-style: normal; /* para que no salte el italics por defecto */
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* Los otros tres bloques de enlaces */
+.footer-col h4.footer-heading {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.footer-col ul li {
+  margin-bottom: 0.5rem;
+}
+.footer-col ul li a {
+  color: var(--link-footer);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+.footer-col ul li a:hover {
+  color: var(--link-hover);
+}
+
+/* Separador */
+.footer-divider {
+  border-top: 1px solid var(--border-footer);
+  margin: 0 3rem;
+}
+
+/* Pie de página */
+.footer-bottom {
+  text-align: center;
+  padding: 1rem 3rem;
+  font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2rem 1.5rem;
+  }
+  .footer-divider {
+    margin: 0 1.5rem;
+  }
+  .footer-bottom {
+    padding: 1rem 1.5rem;
+  }
+}

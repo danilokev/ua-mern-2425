@@ -1,9 +1,8 @@
 import '../styles/Dashboard.css'
-import logo3d from '../assets/3d-icon.png'      // Icono 3D
-import logo2d from '../assets/2d-icon.png'      // Icono 2D
+import logo2d from '../assets/2d-icon.png'         // Icono 2D
 import addonIcon from '../assets/addons-icon.png'  // Icono Add-On
-import asset1 from '../assets/terreno.png'      // Imagen ejemplo
-import asset2 from '../assets/supermario.png'   // Imagen ejemplo
+import asset1 from '../assets/terreno.png'         // Imagen ejemplo
+import asset2 from '../assets/supermario.png'      // Imagen ejemplo
 
 function Dashboard() {
   return (
@@ -17,7 +16,10 @@ function Dashboard() {
         <h2 id="categories-heading">Categorías</h2>
         <div className="categories">
           <article className="category">
-            <img src={logo3d} alt="Icono 3D" />
+            <img
+              src="https://www.dropbox.com/scl/fi/9yf1zga73syso3s6wrs66/3d-icon.png?rlkey=gapn3g2rrjxe0tinfauorlohw&raw=1"
+              alt="Icono 3D"
+            />
             <h3>3D</h3>
             <p>Explora modelos y escenas 3D</p>
           </article>
