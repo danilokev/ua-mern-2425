@@ -1,19 +1,21 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'
+import 'react-toastify/dist/ReactToastify.css';
 import Header from './components/Header';
-import Footer from './components/Footer'
+import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
 import SidebarLayout from './components/SidebarLayout';
+import StickyNavbar from './components/StickyNavBar';
+import './styles/index.css';
 
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Help from './pages/Help';
 import AssetUpload from './pages/AssetUpload';
-import Profile from './pages/Profile'
-import AssetView from './pages/AssetView'
-import DeleteAccount from './pages/DeleteAccount'
+import Profile from './pages/Profile';
+import AssetView from './pages/AssetView';
+import DeleteAccount from './pages/DeleteAccount';
 
 function App() {
   return (
@@ -39,6 +41,10 @@ function App() {
 
           <Route path='*' element={<div>Página no encontrada</div>} />
         </Routes>
+
+        {/* StickyNavbar añadido aquí para estar siempre visible */}
+        <StickyNavbar />
+        
         <Footer />
       </Router>
       <ToastContainer />

@@ -1,5 +1,5 @@
 .dashboard {
-  margin: 5em 2em;
+  margin: 1em 2em;
   padding: 20px;
   background-color: var(--secondary-background-color);
 }
@@ -28,7 +28,6 @@
 }
 
 .category img {
-  width: 60px;
   margin-bottom: 10px;
 }
 

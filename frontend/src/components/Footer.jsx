@@ -22,36 +22,36 @@ export default function Footer() {
             03690 San Vicente del Raspeig – Alicante
           </address>
         </div>
+        <div className="footer-col-info">
+          {/* Columna 2: General */}
+          <div className="footer-col">
+            <h4 className="footer-heading">General</h4>
+            <ul>
+              <li><Link to="/contact">Contacto</Link></li>
+              <li><Link to="/devs">Desarrolladores</Link></li>
+              <li><Link to="/register">Regístrate</Link></li>
+            </ul>
+          </div>
 
-        {/* Columna 2: General */}
-        <div className="footer-col">
-          <h4 className="footer-heading">General</h4>
-          <ul>
-            <li><Link to="/contact">Contacto</Link></li>
-            <li><Link to="/devs">Desarrolladores</Link></li>
-            <li><Link to="/register">Regístrate</Link></li>
-          </ul>
-        </div>
+          {/* Columna 3: Navegar por MMG */}
+          <div className="footer-col">
+            <h4 className="footer-heading">Navegar por MMG</h4>
+            <ul>
+              <li><Link to="/">Inicio</Link></li>
+              <li><Link to="/accessibility">Accesibilidad</Link></li>
+            </ul>
+          </div>
 
-        {/* Columna 3: Navegar por MMG */}
-        <div className="footer-col">
-          <h4 className="footer-heading">Navegar por MMG</h4>
-          <ul>
-            <li><Link to="/">Inicio</Link></li>
-            <li><Link to="/accessibility">Accesibilidad</Link></li>
-          </ul>
-        </div>
-
-        {/* Columna 4: Legal */}
-        <div className="footer-col">
-          <h4 className="footer-heading">Legal</h4>
-          <ul>
-            <li><Link to="/terms">Términos</Link></li>
-            <li><Link to="/privacy">Privacidad</Link></li>
-          </ul>
+          {/* Columna 4: Legal */}
+          <div className="footer-col">
+            <h4 className="footer-heading">Legal</h4>
+            <ul>
+              <li><Link to="/terms">Términos</Link></li>
+              <li><Link to="/privacy">Privacidad</Link></li>
+            </ul>
+          </div>
         </div>
       </div>
-
       {/* Línea separadora */}
       <div className="footer-divider" />
 

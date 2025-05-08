@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout, reset } from '../features/auth/authSlice'
 import { useState } from 'react'
-import logo from '../assets/logo_b.png'
+import logo from '../assets/logo_b2.png'
 
 function Header() {
   const navigate = useNavigate()
@@ -24,10 +24,11 @@ function Header() {
   }
 
   return (
-    <header className='header'>
+  <header className='header'>
+    <section className='header-main'>
       <div className='logo'>
         <Link to='/'>
-          <img src={logo} alt="Logo de la empresa MolaMazoGames" className='logo-img' />
+          <img src={logo} alt="Logo de la empresa MolaMazoGames" className='logo-img'/>
         </Link>
       </div>
       <form onSubmit={handleSearch}>
@@ -43,10 +44,10 @@ function Header() {
           </button>
         </p>
       </form>
-      <ul>
+      <ul className='header-buttons'>
         {user ? (
           <>
-          <li>
+            <li>
               <Link to='/profile'>
                 <FaUser /> Mi perfil
               </Link>
@@ -72,7 +73,22 @@ function Header() {
           </>
         )}
       </ul>
-    </header>
+    </section>
+
+    <nav className="tags-nav">
+      <ul className="tags-list">
+        <li className="tag-item">Aventura</li>
+        <li className="tag-item">Acción</li>
+        <li className="tag-item">Estrategia</li>
+        <li className="tag-item">RPG</li>
+        <li className="tag-item">Indie</li>
+        <li className="tag-item">Simulación</li>
+        <li className="tag-item">Terror</li>
+        <li className="tag-item">Deportes</li>
+      </ul>
+    </nav>
+  </header>
+    
   )
 }
 

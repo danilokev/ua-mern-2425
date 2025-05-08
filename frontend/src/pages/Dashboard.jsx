@@ -1,23 +1,20 @@
 import '../styles/Dashboard.css'
-import logo2d from '../assets/2d-icon.png'         // Icono 2D
-import addonIcon from '../assets/addons-icon.png'  // Icono Add-On
+import cat3D from '../assets/3d-cat-image.jpg'
+import cat2D from '../assets/2d-cat-image.jpg'
+import catAddon from '../assets/others-cat-image.jpg'
 import asset1 from '../assets/terreno.png'         // Imagen ejemplo
 import asset2 from '../assets/supermario.png'      // Imagen ejemplo
+
 
 function Dashboard() {
   return (
     <main className="dashboard">
-      <header className="section-heading">
-        <h1>Assets</h1>
-        <p>Categorías principales</p>
-      </header>
-
       <section aria-labelledby="categories-heading">
-        <h2 id="categories-heading">Categorías</h2>
+        <h2 id="categories-heading">Categorías principales</h2>
         <div className="categories">
           <article className="category">
             <img
-              src="https://www.dropbox.com/scl/fi/9yf1zga73syso3s6wrs66/3d-icon.png?rlkey=gapn3g2rrjxe0tinfauorlohw&raw=1"
+              src={cat3D}
               alt="Icono 3D"
             />
             <h3>3D</h3>
@@ -25,13 +22,13 @@ function Dashboard() {
           </article>
 
           <article className="category">
-            <img src={logo2d} alt="Icono 2D" />
+            <img src={cat2D} alt="Icono 2D" />
             <h3>2D</h3>
             <p>Descubre ilustraciones y sprites</p>
           </article>
 
           <article className="category">
-            <img src={addonIcon} alt="Icono Add-Ons" />
+            <img src={catAddon} alt="Icono Add-Ons" />
             <h3>Add-Ons</h3>
             <p>Complementos y extras para tu juego</p>
           </article>

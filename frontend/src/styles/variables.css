@@ -1,10 +1,11 @@
 :root {
-  --primary-background-color:#29292D; 
+  --primary-background-color:#29292D;
+  --secondary-background-color: #2F2E35;  
   --hover-background-color: #313034;
 
   --primary-text-color: #ffffff; 
   
-  --secondary-background-color: #2F2E35; 
+  
   --hover-secondary-background-color:#37373C; 
   
   --tertiary-background-color: #333339; 

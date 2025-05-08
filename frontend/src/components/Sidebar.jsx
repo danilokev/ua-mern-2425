@@ -1,12 +1,21 @@
+import { useState } from 'react';
 import { Sidebar, Menu, SubMenu, MenuItem } from 'react-pro-sidebar';
-import { FaHome, FaBox, FaUpload, FaSignOutAlt, 
-  FaHistory, FaUser, FaUserSlash, FaUniversalAccess } from 'react-icons/fa';
+import { FaHome, FaBox, FaUpload, FaSignOutAlt, FaHistory, FaUser, FaUserSlash, FaUniversalAccess, FaBars } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 function SidebarComponent() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <div className='sidebar-main'>
-      <Sidebar className="sidebar-container">
+    <div className={`sidebar-main ${isOpen ? 'open' : 'closed'}`} >
+      <button className='sidebar-toggle' onClick={toggleSidebar}>
+        <FaBars />
+      </button>
+      <Sidebar className={`sidebar-container ${isOpen ? 'open' : 'closed'}`}>
         <p>Menú Principal</p>
         <div>
           <Menu className='sidebar-menu'>
@@ -43,7 +52,6 @@ function SidebarComponent() {
         </div>
       </Sidebar>
     </div>
-
   );
 }
 
