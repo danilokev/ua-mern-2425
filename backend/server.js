@@ -15,7 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+//app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
 
 app.use('/api/goals', require('./routes/goalRoutes'));

@@ -16,7 +16,7 @@ function SidebarComponent() {
             <MenuItem className='sidebar-menu__item' component={<Link to="/profile" />}>
               <FaUser /> Perfil
             </MenuItem>
-            <MenuItem className='sidebar-menu__item' component={<Link to="#" />}>
+            <MenuItem className='sidebar-menu__item' component={<Link to="/my-assets" />}>
               <FaBox /> Mis Assets
             </MenuItem>
             <MenuItem className='sidebar-menu__item' component={<Link to="/upload" />}>

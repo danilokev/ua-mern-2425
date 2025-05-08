@@ -14,6 +14,9 @@ import AssetUpload from './pages/AssetUpload';
 import Profile from './pages/Profile'
 import AssetView from './pages/AssetView'
 import DeleteAccount from './pages/DeleteAccount'
+import MyAssets    from './pages/MyAssets'
+import AssetDetail    from './pages/MyAssets'
+
 
 function App() {
   return (
@@ -32,9 +35,12 @@ function App() {
               <SidebarLayout />
             </PrivateRoute>
           }>
+            <Route path="/my-assets" element={<MyAssets />} />
+            <Route path="/assets/:id" element={<AssetDetail />} />
             <Route path='/upload' element={<AssetUpload />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/delete-account' element={<DeleteAccount />} />
+            
           </Route>
 
           <Route path='*' element={<div>Página no encontrada</div>} />
