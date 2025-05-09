@@ -21,3 +21,27 @@
   --anchor-color: #7EBCF2;
   --border-color: #424348;
 }
+
+/* Modo Claro */
+[data-theme='light'] {
+  --primary-background-color: #f9f9f9;
+  --secondary-background-color: #ffffff;
+  --hover-background-color: #eaeaea;
+
+  --primary-text-color: #333333;
+  
+  --hover-secondary-background-color: #e0e0e0;
+
+  --tertiary-background-color: #f3f3f3;
+  --hover-tertiary-background-color: #dddddd;
+
+  --card-background-color: #ffffff;
+  --card-footer-background-color: #f0f0f0;
+
+  --box-shadow-color: rgba(0, 0, 0, 0.1);
+
+  --accent-color: #3b82f6; /* Azul claro */
+  --hover-accent-color: #2563eb;
+  --anchor-color: #1d4ed8;
+  --border-color: #e5e7eb;
+}

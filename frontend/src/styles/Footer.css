@@ -1,11 +1,3 @@
-:root {
-  --bg-footer: #333339;
-  --text-footer: #ffffff;
-  --link-footer: #7ebcf2;
-  --link-hover: #5964f2;
-  --border-footer: #424348;
-}
-
 /* Contenedor principal */
 .footer {
   display: flex;
