@@ -63,9 +63,21 @@ const getAssets = async (req, res) => {
   }
 };
 
+// Obtiene un solo asset por ID
+const getAssetById = async (req, res) => {
+  try {
+    const asset = await Asset.findById(req.params.id)
+    if (!asset) {
+      return res.status(404).json({ message: 'Asset no encontrado' })
+    }
+    res.status(200).json(asset)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
 
 module.exports = {
   createAsset,
-  getAssets
-};
-  
+  getAssets,
+  getAssetById
+}

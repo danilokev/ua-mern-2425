@@ -17,7 +17,7 @@ import Profile from './pages/Profile'
 import AssetView from './pages/AssetView'
 import DeleteAccount from './pages/DeleteAccount'
 import MyAssets    from './pages/MyAssets'
-import AssetDetail    from './pages/MyAssets'
+import AssetDetail    from './pages/AssetDetail'
 
 
 function App() {

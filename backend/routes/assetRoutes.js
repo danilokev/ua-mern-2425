@@ -3,7 +3,8 @@ const router = express.Router();
 const multer = require('multer');
 const {
   createAsset,
-  getAssets
+  getAssets,
+  getAssetById
 } = require('../controllers/assetController');
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -15,4 +16,7 @@ router.route('/')
     { name: 'images', maxCount: 5 }
   ]), createAsset);
 
+  router.route('/:id')
+  .get(getAssetById)
+  
 module.exports = router;
