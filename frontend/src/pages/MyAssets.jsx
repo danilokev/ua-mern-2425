@@ -12,32 +12,48 @@ export default function MyAssets() {
   useEffect(() => {
     const fetchAssets = async () => {
       try {
-        const res  = await fetch('/api/assets')
-        if (!res.ok) throw new Error(`Error ${res.status}`)
+        // 1) Lee el token de localStorage
+        const token = localStorage.getItem('token')
+        if (!token) {
+          throw new Error('Usuario no autenticado')
+        }
+
+        // 2) Incluye la cabecera Authorization
+        const res = await fetch('/api/assets', {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        })
+
+        if (!res.ok) {
+          if (res.status === 401) {
+            throw new Error('No autorizado, por favor inicia sesión de nuevo')
+          }
+          throw new Error(`Error ${res.status}`)
+        }
+
         const data = await res.json()
         setAssets(data)
       } catch (err) {
         console.error(err)
-        setError('No se han podido cargar tus assets')
+        setError(err.message)
       } finally {
         setLoading(false)
       }
     }
+
     fetchAssets()
   }, [])
 
   if (loading) return <p>Cargando tus assets…</p>
   if (error)   return <p className="error">{error}</p>
 
-  // función helper para elegir la URL de la imagen
   const getImageUrl = asset => {
-    // 1) primer intento: campo image (tu enlace directo de Dropbox)
     if (asset.image) return asset.image
-    // 2) segundo intento: si tienes un array images
     if (asset.images && asset.images.length > 0) {
       return asset.images[0]
     }
-    // 3) fallback: imagen por defecto de tu carpeta estática
     return '/images/default-avatar.jpg'
   }
 
@@ -50,12 +66,11 @@ export default function MyAssets() {
           <div className="assets-grid">
             {assets.map(asset => (
               <div key={asset._id} className="asset-card">
-                <img 
+                <img
                   src={getImageUrl(asset)}
                   alt={asset.title}
                   className="asset-card__img"
                   onError={e => {
-                    // por si algo falla en la URL: recae al default
                     e.currentTarget.src = '/images/default-avatar.jpg'
                   }}
                 />

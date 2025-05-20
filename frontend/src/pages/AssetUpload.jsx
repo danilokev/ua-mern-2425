@@ -94,47 +94,60 @@ function AssetUpload() {
     }));
   };
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
+const onSubmit = async (e) => {
+  e.preventDefault();
 
-    const uploadData = new FormData();
-    uploadData.append('title', title);
-    uploadData.append('type', type);
-    uploadData.append('description', description);
-    
-    files.forEach(file => {
-      uploadData.append('files', file.fileObject);
-    });
-    
-    images.forEach(image => {
-      uploadData.append('images', image.fileObject);
-    });
+  // 1) Preparamos el FormData
+  const uploadData = new FormData();
+  uploadData.append('title', title);
+  uploadData.append('type', type);
+  uploadData.append('description', description);
 
-    try {
-      const response = await fetch('/api/assets', {
-        method: 'POST',
-        body: uploadData
+  files.forEach(file => {
+    uploadData.append('files', file.fileObject);
+  });
+
+  images.forEach(image => {
+    uploadData.append('images', image.fileObject);
+  });
+
+  // 2) Recuperamos el token del usuario
+  const token = localStorage.getItem('token');
+  if (!token) {
+    toast.error('Necesitas iniciar sesión para subir un asset');
+    return;
+  }
+
+  try {
+    // 3) Enviamos la petición con la cabecera Authorization
+    const response = await fetch('/api/assets', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: uploadData
+    });
+    const data = await response.json();
+
+    if (response.ok) {
+      toast.success('Asset subido con éxito');
+      // Reset del formulario
+      setFormData({
+        title: '',
+        type: '2D',
+        description: '',
+        files: [],
+        images: []
       });
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success('Asset subido con éxito');
-        setFormData({
-          title: '',
-          type: '2D',
-          description: '',
-          files: [],
-          images: []
-        });
-        setActiveTab('content');
-      } else {
-        toast.error(data.message || 'Error al subir el asset');
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error('Error en la conexión');
+      setActiveTab('content');
+    } else {
+      toast.error(data.message || 'Error al subir el asset');
     }
-  };
+  } catch (error) {
+    console.error(error);
+    toast.error('Error en la conexión');
+  }
+};
 
   return (
     <div className="asset-upload container">

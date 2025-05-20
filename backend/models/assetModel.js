@@ -1,6 +1,12 @@
-const mongoose = require('mongoose');
+// backend/models/assetModel.js
+const mongoose = require('mongoose')
 
 const assetSchema = mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   title: {
     type: String,
     required: [true, 'Por favor añade un título']
@@ -20,17 +26,19 @@ const assetSchema = mongoose.Schema({
   },
   image: {
     type: String, // Main image URL
-    required: [true, 'La imagen es obligatoria']
+    default: ''
   },
-  images: [{ // All images
+  images: [{      // All images
     type: String
   }],
   file: {
-    type: String, // Main file URL
+    type: String // Main file URL
   },
-  files: [{ // All files
+  files: [{      // All files
     type: String
   }]
-});
+}, {
+  timestamps: true
+})
 
-module.exports = mongoose.model('Asset', assetSchema);
+module.exports = mongoose.model('Asset', assetSchema)

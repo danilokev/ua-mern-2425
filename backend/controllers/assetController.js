@@ -1,77 +1,82 @@
-'use strict';
+'use strict'
 
-const Asset = require('../models/assetModel');
-const { uploadToDropbox } = require('./dropboxService');
-
+const Asset = require('../models/assetModel')
+const { uploadToDropbox } = require('./dropboxService')
 
 // Crea un nuevo asset
 const createAsset = async (req, res) => {
   try {
-    // 1) Subir archivos a Dropbox
-    const fileUrls = [];
+    const userId = req.user.id
+
+    // 1) Subir archivos
+    const fileUrls = []
     if (req.files['files']) {
       for (const f of req.files['files']) {
-        // Construye un nombre único
-        const ext = f.originalname.split('.').pop();
-        const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}.${ext}`;
-        // Sube y devuelve la URL raw
-        const url = await uploadToDropbox(f.buffer, '/assets', filename);
-        fileUrls.push(url);
+        const ext      = f.originalname.split('.').pop()
+        const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+        // Metemos cada usuario en su carpeta
+        const url = await uploadToDropbox(f.buffer, `/assets/${userId}`, filename)
+        fileUrls.push(url)
       }
     }
 
-    // 2) Subir imágenes a Dropbox
-    const imageUrls = [];
+    // 2) Subir imágenes
+    const imageUrls = []
     if (req.files['images']) {
       for (const img of req.files['images']) {
-        const ext = img.originalname.split('.').pop();
-        const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}.${ext}`;
-        const url = await uploadToDropbox(img.buffer, '/images', filename);
-        imageUrls.push(url);
+        const ext      = img.originalname.split('.').pop()
+        const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+        const url = await uploadToDropbox(img.buffer, `/images/${userId}`, filename)
+        imageUrls.push(url)
       }
     }
 
-    // 3) Crear el documento en Mongo con las URLs obtenidas
+    // 3) Crear en Mongo guardando el user
     const assetData = {
+      user:        userId,
       title:       req.body.title,
       type:        req.body.type,
       description: req.body.description,
-      file:        fileUrls[0]  || '',  // archivo principal
-      files:       fileUrls,           // todos los archivos
-      image:       imageUrls[0] || '', // imagen principal
-      images:      imageUrls           // todas las imágenes
-    };
+      file:        fileUrls[0]  || '',
+      files:       fileUrls,
+      image:       imageUrls[0] || '',
+      images:      imageUrls
+    }
 
-    const asset = await Asset.create(assetData);
-    return res.status(201).json(asset);
-
+    const asset = await Asset.create(assetData)
+    res.status(201).json(asset)
   } catch (error) {
-    console.error('Error creando asset:', error);
-    return res.status(400).json({ message: error.message });
+    console.error('Error creando asset:', error)
+    res.status(400).json({ message: error.message })
   }
-};
+}
 
-
-// Obtiene todos los assets
+// Listar sólo los assets del usuario logueado
 const getAssets = async (req, res) => {
   try {
-    const assets = await Asset.find().sort({ uploadDate: -1 });
-    return res.status(200).json(assets);
+    const assets = await Asset
+      .find({ user: req.user.id })
+      .sort({ uploadDate: -1 })
+    res.status(200).json(assets)
   } catch (error) {
-    console.error('Error fetching assets:', error);
-    return res.status(500).json({ message: error.message });
+    console.error('Error fetching assets:', error)
+    res.status(500).json({ message: error.message })
   }
-};
+}
 
-// Obtiene un solo asset por ID
+// Obtener un asset por id, pero sólo si le pertenece al user
 const getAssetById = async (req, res) => {
   try {
     const asset = await Asset.findById(req.params.id)
     if (!asset) {
       return res.status(404).json({ message: 'Asset no encontrado' })
     }
+    if (asset.user.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'No autorizado' })
+    }
     res.status(200).json(asset)
   } catch (error) {
+    console.error(error)
     res.status(500).json({ message: error.message })
   }
 }
