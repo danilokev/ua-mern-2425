@@ -1,3 +1,4 @@
+// frontend/src/pages/AssetDetail.jsx
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { FaArrowLeft, FaFile, FaImage } from 'react-icons/fa'
@@ -12,7 +13,18 @@ export default function AssetDetail() {
   useEffect(() => {
     const fetchAsset = async () => {
       try {
-        const res = await fetch(`/api/assets/${id}`)
+        // 1) Leer el token de localStorage
+        const token = localStorage.getItem('token')
+        if (!token) throw new Error('No estás autenticado')
+
+        // 2) Añadir Authorization header
+        const res = await fetch(`/api/assets/${id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        })
+
         if (!res.ok) throw new Error(`Error ${res.status}`)
         const data = await res.json()
         setAsset(data)
@@ -49,7 +61,7 @@ export default function AssetDetail() {
             <img src={asset.image} alt={asset.title} />
           </div>
         )}
-        {asset.images && asset.images.length > 0 && (
+        {asset.images?.length > 0 && (
           <div className="media-item">
             <FaImage /> Todas las imágenes
             <div className="media-list">
@@ -67,7 +79,7 @@ export default function AssetDetail() {
             </a>
           </div>
         )}
-        {asset.files && asset.files.length > 0 && (
+        {asset.files?.length > 0 && (
           <div className="media-item">
             <FaFile /> Todos los archivos:
             <ul className="file-list">
