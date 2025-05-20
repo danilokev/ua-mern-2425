@@ -16,6 +16,8 @@ function AssetUpload() {
 
   const { title, type, description, files, images } = formData;
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Configuración de dropzone para archivos
   const {
     getRootProps: getFileRootProps,
@@ -97,6 +99,8 @@ function AssetUpload() {
 const onSubmit = async (e) => {
   e.preventDefault();
 
+  setIsSubmitting(true);
+
   // 1) Preparamos el FormData
   const uploadData = new FormData();
   uploadData.append('title', title);
@@ -146,12 +150,14 @@ const onSubmit = async (e) => {
   } catch (error) {
     console.error(error);
     toast.error('Error en la conexión');
+  } finally {
+    setIsSubmitting(false);
   }
 };
 
   return (
-    <div className="asset-upload container">
-      <h2>Subir un Asset</h2>
+    <div className="asset-upload">
+      <h1>Subir un Asset</h1>
       
       {/* Barra de pestañas */}
       <div className="tabs">
@@ -180,7 +186,7 @@ const onSubmit = async (e) => {
         {activeTab === 'content' && (
           <div className="tab-content">
             <div className="form-group">
-              <label>Título</label>
+              <label className='txt-form-asset'>Nombre del Asset:</label>
               <input 
                 type="text" 
                 name="title" 
@@ -190,7 +196,7 @@ const onSubmit = async (e) => {
               />
             </div>
             <div className="form-group">
-              <label>Tipo</label>
+              <label className='txt-form-asset'>Elige el tipo de categoría:</label>
               <select name="type" value={type} onChange={onChange}>
                 <option value="2D">2D</option>
                 <option value="3D">3D</option>
@@ -201,7 +207,7 @@ const onSubmit = async (e) => {
               </select>
             </div>
             <div className="form-group">
-              <label>Archivos del Asset</label>
+              <label className='txt-form-asset'>Archivos del Asset:</label>
               <div 
                 {...getFileRootProps()} 
                 className={`dropzone ${isFileDragActive ? 'active' : ''} ${isFileDragReject ? 'reject' : ''}`}
@@ -216,7 +222,13 @@ const onSubmit = async (e) => {
                   ) : (
                     <>
                       <p className="dropzone-text">Arrastra y suelta archivos aquí</p>
-                      <p className="dropzone-subtext">o haz clic para seleccionar</p>
+                      <p className="dropzone-subtext">
+                            Formatos aceptados:
+                            <br />• Modelos 3D (.glb)
+                            <br />• Audio (.mp3)
+                            <br />• Video (.mp4)
+                            <br />Máximo: 10 archivos
+                      </p>
                     </>
                   )}
                   <button type="button" className="btn btn-outline">
@@ -255,12 +267,13 @@ const onSubmit = async (e) => {
         {activeTab === 'description' && (
           <div className="tab-content">
             <div className="form-group">
-              <label>Descripción</label>
+              <label className='txt-form-asset'>Descripción del Asset <span>(Describe detalladamente tu contenido)</span></label>
               <textarea 
                 name="description" 
                 value={description} 
                 onChange={onChange} 
-                rows="8"
+                rows="10"
+                placeholder='Texto...'
                 required
               ></textarea>
             </div>
@@ -271,7 +284,7 @@ const onSubmit = async (e) => {
         {activeTab === 'images' && (
           <div className="tab-content">
             <div className="form-group">
-              <label>Imágenes del Asset</label>
+              <label className='txt-form-asset'>Imágenes del Asset</label>
               <div 
                 {...getImageRootProps()} 
                 className={`dropzone ${isImageDragActive ? 'active' : ''} ${isImageDragReject ? 'reject' : ''}`}
@@ -286,7 +299,10 @@ const onSubmit = async (e) => {
                   ) : (
                     <>
                       <p className="dropzone-text">Arrastra y suelta imágenes aquí</p>
-                      <p className="dropzone-subtext">o haz clic para seleccionar</p>
+                      <p className="dropzone-subtext">
+                            Formatos aceptados: .jpg, .jpeg, .png, .gif
+                            <br />Máximo: 5 imágenes
+                      </p>
                     </>
                   )}
                   <button type="button" className="btn btn-outline">
@@ -323,8 +339,15 @@ const onSubmit = async (e) => {
 
         {/* Botón de submit */}
         <div className="form-actions">
-          <button type="submit" className="btn submit-btn">
-            Subir Asset
+          <button type="submit" className="btn submit-btn" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <FiUpload className="spinner" />
+                Subiendo...
+              </>
+            ) : (
+              'Subir Asset'
+            )}
           </button>
         </div>
       </form>

@@ -5,8 +5,7 @@
   align-items: center;
   flex-wrap: wrap;
   text-align: center;
-  background-color: var(--bg-footer);
-  color: var(--text-footer);
+  background-color: var(--tertiary-background-color);
   display: flex;
   flex-direction: column;
   width: 100%;

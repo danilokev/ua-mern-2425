@@ -1,7 +1,6 @@
 // frontend/src/pages/MyAssets.jsx
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { FaBox } from 'react-icons/fa'
 import '../styles/myAssets.css'
 
 export default function MyAssets() {
@@ -58,14 +57,14 @@ export default function MyAssets() {
   }
 
   return (
-    <div className="my-assets container">
-      <h2><FaBox /> Mis Assets</h2>
+    <div className="my-assets">
+      <h1>Mis Assets</h1>
       {assets.length === 0
         ? <p>No tienes ningún asset aún.</p>
         : (
-          <div className="assets-grid">
+          <div className="container-assets">
             {assets.map(asset => (
-              <div key={asset._id} className="asset-card">
+              <div key={asset._id} className="assets-card">
                 <img
                   src={getImageUrl(asset)}
                   alt={asset.title}

@@ -11,7 +11,6 @@ import './styles/index.css';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Help from './pages/Help';
 import AssetUpload from './pages/AssetUpload';
 import Profile from './pages/Profile'
 import AssetView from './pages/AssetView'
@@ -29,7 +28,6 @@ function App() {
           <Route path='/' element={<Dashboard />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
-          <Route path="/help" element={<Help />} />
           <Route path="/assetview" element={<AssetView />} />
           
           <Route path='/' element={

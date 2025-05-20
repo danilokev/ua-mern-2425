@@ -188,7 +188,8 @@ const Profile = () => {
               </div>
             ) : (
               <div className="static-field">
-                <h2>{formData.name}</h2>
+                <label className='label-name'>Nombre de usuario:</label>
+                <p>{formData.name}</p>
                 <EditButton field="name" />
               </div>
             )}
@@ -223,6 +224,7 @@ const Profile = () => {
               </div>
             ) : (
               <div className="static-field">
+                <label className='label-name'>Correo electrónico:</label>
                 <p>{formData.email}</p>
                 <EditButton field="email" />
               </div>
@@ -273,6 +275,7 @@ const Profile = () => {
               </div>
             ) : (
               <div className="static-field">
+                <label className='label-name'>Contraseña:</label>
                 <p>••••••••</p>
                 <EditButton field="password" />
               </div>

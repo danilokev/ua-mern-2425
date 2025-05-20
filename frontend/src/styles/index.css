@@ -136,13 +136,13 @@ body {
 /* Sidebar */
 .sidebar-layout {
   display: flex;
-  gap: 2em;
-  min-height: calc(100vh - 6em); 
+  gap: 4em;
+  min-height: calc(100vh - 4em); 
 }
 
 .sidebar-main {
+  background-color: var(--sidebar-color);
   padding: 1em;
-  border-right: 1px solid var(--border-color);
   position: relative;
 }
 
@@ -165,11 +165,12 @@ body {
 
   p {
     margin-bottom: 1em;
-    font-size: 18px;
+    font-size: 20px;
+    font-weight: 500;
   }
   
   > div, a.ps-menu-button {
-    background-color: var(--primary-background-color);
+    background-color: var(--sidebar-color);
   }
 
   .sidebar-menu__item > a, .ps-menu-button {
@@ -222,6 +223,16 @@ body {
 
 .form-group {
   margin-bottom: 10px;
+
+  > select {
+    width: 100%;
+    padding: .5em;
+  }
+
+  > textarea {
+    width: 100%;
+    padding: .5em;
+  }
 }
 
 .form-group input {
@@ -349,11 +360,21 @@ body {
   gap: 1rem;
 
   .btn-danger{
-    background-color: #a52019;
+    background-color: #a20000;
+    transition: background-color ease .3s;
+
+    &:hover {
+      background-color: #7a0000;
+    }
   }
   
   .btn-confirmation {
-    background-color: #008f39;
+    background-color: #008000;
+    transition: background-color ease .3s;
+
+    &:hover {
+      background-color: #006400;
+    }
   }
 }
 
@@ -413,6 +434,32 @@ body {
   }
 }
 
+/* --- Estilos Pagina darse de baja --- */
+.container-account > h1 {
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+.container-da {
+  background-color: var(--secondary-background-color);
+  border-radius: .5em;
+  box-shadow: 0px 4px 10px var(--box-shadow-color);
+  padding: 2em;
+
+  .text-danger {
+    margin-bottom: 1.5em;
+  }
+}
+
+.texto-pwd {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.btn-2 {
+  width: 100%;
+}
+
 .footer-center {
   flex: 2;
   display: flex;
@@ -464,50 +511,6 @@ body {
   width: 20px;
   height: 20px;
 }
-
-
-/* Estilos para la Help Page */
-.help-page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 2.5em 1em;
-  background-color: var(--secondary-background-color, #2F2E35);
-  color: var(--primary-text-color, #ffffff);
-  text-align: center;
-}
-
-.help-page h2 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5em;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--primary-text-color, #ffffff);
-}
-
-.help-grid {
-  display: grid;
-  /* Se generan tantas columnas como quepan, cada una con un mínimo de 160px y máximo de 1fr */
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 2em;
-  margin-top: 2em;
-  padding: 0 1em;
-}
-
-.help-column {
-  background-color: var(--tertiary-background-color, #333339);
-  padding: 1em;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px var(--box-shadow-color, rgba(0, 0, 0, 0.6));
-}
-
-.help-column h3 {
-  margin-bottom: 0.8em;
-  font-size: 1.2rem;
-  color: var(--accent-color, #5964F2);
-  border-bottom: 2px solid var(--accent-color, #5964F2);
-  padding-bottom: 0.3em;
-}
-
 
 /* Responsive */
 @media (max-width: 600px) {
@@ -636,15 +639,13 @@ body {
 /* ===============================
    Profile Container Styles
 =============================== */
-.profile-container {
-  display: flex;
-  justify-content: start;
-  align-items: center; /* Cambio aquí para centrar verticalmente */
-  background-color: var(--primary-background-color);
-  color: var(--primary-text-color);
-  height: 100vh; /* Ocupa toda la altura de la ventana */
-  width: 100vw;  /* Ocupa todo el ancho de la ventana */
-  box-sizing: border-box;
+/* .profile-container {
+} */
+
+.main-content {
+  width: 100%;
+  max-width: 40em;
+  margin: 2em 0;
 }
 
 .user-profile {
@@ -652,8 +653,11 @@ body {
   padding: 2em;
   border-radius: 8px;
   box-shadow: 0 2px 10px var(--box-shadow-color);
-  width: 100%;
-  max-width: 600px;
+
+  > h1 {
+    font-size: 2rem;
+    margin-bottom: .5em;
+  }
 }
 
 /* ===============================
@@ -662,11 +666,12 @@ body {
 .avatar-section {
   display: flex;
   justify-content: center;
-  margin-bottom: 2em;
+  margin-bottom: 2.5em;
 }
 
 .avatar-wrapper {
-  position: relative;
+  display: none; /* He ocultado temporalmente el botón de cambiar avatar */
+  /* position: relative; */
   display: inline-block;
 }
 
@@ -676,7 +681,6 @@ body {
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--accent-color);
-  transition: opacity 0.3s ease;
 }
 
 .avatar-upload-label {
@@ -718,9 +722,12 @@ body {
 
 .static-field h2,
 .static-field p {
-  margin: 0;
-  font-size: 1.2em;
-  color: var(--primary-text-color);
+  margin: .75em 0;
+  font-size: 1.25em;
+}
+
+.label-name {
+  font-size: 1.5em;
 }
 
 .edit-form input {
@@ -744,8 +751,10 @@ body {
 =============================== */
 .btn-edit {
   background-color: var(--accent-color);
+  font-weight: 500;
   color: white;
-  padding: 0.4em 1em;
+  width: 100%;
+  padding: .75em;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -757,9 +766,10 @@ body {
 }
 
 .btn-save {
-  background-color: var(--accent-color);
+  background-color: #008000;
   color: white;
-  padding: 0.5em 1em;
+  font-weight: 600;
+  padding: .75em 1.5em;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -768,16 +778,21 @@ body {
 }
 
 .btn-save:hover {
-  background-color: var(--hover-accent-color);
+  background-color: #006400;
 }
 
 .btn-cancel {
-  background-color: var(--hover-background-color);
+  background-color: #696969;
   color: white;
-  padding: 0.5em 1em;
+  font-weight: 600;
+  padding: .75em 1.5em;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #565656;
+  }
 }
 
 .form-actions {

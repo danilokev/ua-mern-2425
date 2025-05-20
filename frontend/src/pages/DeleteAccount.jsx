@@ -31,33 +31,36 @@ function DeleteAccount() {
   }
 
   return (
-    <div className="container">
-      <h2>Eliminar cuenta permanentemente</h2>
-      <p className="text-danger mb-4">
-        ¡Advertencia! Esta acción eliminará todos tus datos y no se puede deshacer.
-      </p>
+    <div className="container-account">
+      <h1>Eliminar cuenta permanentemente</h1>
 
-      <form onSubmit={handleSubmit}>
-        <div className="form-group mb-3">
-          <label>Contraseña actual:</label>
-          <input
-            type="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
+      <div className='container-da'>
+        <p className="text-danger">
+          <strong>¡Advertencia!</strong> Esta acción eliminará todos tus datos y no se puede deshacer.
+        </p>
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className='texto-pwd'>Contraseña actual:</label>
+            <input
+              type="password"
+              className="form-control"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-danger btn-2"
             disabled={isLoading}
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="btn btn-danger"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Procesando...' : 'Eliminar cuenta'}
-        </button>
-      </form>
+          >
+            {isLoading ? 'Procesando...' : 'Eliminar cuenta'}
+          </button>
+        </form>
+      </div>
 
       <ConfirmationModal
         isOpen={showModal}

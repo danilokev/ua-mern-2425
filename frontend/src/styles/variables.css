@@ -13,8 +13,12 @@
   
   --card-background-color:#37373E;
   --card-footer-background-color: #3D3C42;
+  --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --card-hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   
   --box-shadow-color: rgba(0, 0, 0, 0.6);
+
+  --sidebar-color: #242528;
   
   --accent-color: #5964F2; 
   --hover-accent-color: #4655C1;
@@ -39,6 +43,8 @@
   --card-footer-background-color: #f0f0f0;
 
   --box-shadow-color: rgba(0, 0, 0, 0.1);
+
+  --sidebar-color: #ffffff;
 
   --accent-color: #3b82f6; /* Azul claro */
   --hover-accent-color: #2563eb;
