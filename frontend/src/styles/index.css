@@ -670,9 +670,12 @@ body {
 }
 
 .avatar-wrapper {
-  display: none; /* He ocultado temporalmente el botón de cambiar avatar */
-  /* position: relative; */
+  position: relative; 
   display: inline-block;
+}
+
+.avatar-upload-label {
+  display: none; /* He ocultado temporalmente el botón de cambiar avatar */
 }
 
 .user-avatar {

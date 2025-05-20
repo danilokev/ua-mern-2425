@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { deleteAccount, reset } from '../features/auth/authSlice'
+import { deleteAccount } from '../features/auth/authSlice'
 import { toast } from 'react-toastify'
 import ConfirmationModal from '../components/ConfirmationModal'
 
