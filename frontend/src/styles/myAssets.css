@@ -18,9 +18,14 @@
   color: var(--primary-text-color);
   text-align: center;
   padding: 2rem;
-  /* background-color: var(--white-color);
-  border-radius: var(--border-radius);
-  box-shadow: var(--card-shadow); */
+  background-color: var(--secondary-background-color);
+  border-radius: .5em;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 1.5em;
+}
+
+.btn-asset {
+  text-decoration: none;
 }
 
 /* --- Contenedor de las Tarjetas de Assets --- */

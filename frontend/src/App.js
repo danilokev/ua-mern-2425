@@ -37,20 +37,18 @@ function App() {
               <SidebarLayout />
             </PrivateRoute>
           }>
-            <Route path="/my-assets" element={<MyAssets />} />
-            <Route path="/assets/:id" element={<AssetDetail />} />
+            <Route path='/my-assets' element={<MyAssets />} />
+            <Route path='/assets/:id' element={<AssetDetail />} />
+            <Route path='/asset/:id' element={<AssetView />} />
             <Route path='/upload' element={<AssetUpload />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/delete-account' element={<DeleteAccount />} />
-            
           </Route>
 
           <Route path='*' element={<div>Página no encontrada</div>} />
         </Routes>
 
-        {/* StickyNavbar añadido aquí para estar siempre visible */}
         <StickyNavbar />
-        
         <Footer />
       </Router>
       <ToastContainer />

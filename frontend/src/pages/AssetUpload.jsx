@@ -96,84 +96,84 @@ function AssetUpload() {
     }));
   };
 
-const onSubmit = async (e) => {
-  e.preventDefault();
+  const onSubmit = async (e) => {
+    e.preventDefault();
 
-  setIsSubmitting(true);
+    setIsSubmitting(true);
 
-  // 1) Preparamos el FormData
-  const uploadData = new FormData();
-  uploadData.append('title', title);
-  uploadData.append('type', type);
-  uploadData.append('description', description);
+    // 1) Preparamos el FormData
+    const uploadData = new FormData();
+    uploadData.append('title', title);
+    uploadData.append('type', type);
+    uploadData.append('description', description);
 
-  files.forEach(file => {
-    uploadData.append('files', file.fileObject);
-  });
-
-  images.forEach(image => {
-    uploadData.append('images', image.fileObject);
-  });
-
-  // 2) Recuperamos el token del usuario
-  const token = localStorage.getItem('token');
-  if (!token) {
-    toast.error('Necesitas iniciar sesión para subir un asset');
-    return;
-  }
-
-  try {
-    // 3) Enviamos la petición con la cabecera Authorization
-    const response = await fetch('/api/assets', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      body: uploadData
+    files.forEach(file => {
+      uploadData.append('files', file.fileObject);
     });
-    const data = await response.json();
 
-    if (response.ok) {
-      toast.success('Asset subido con éxito');
-      // Reset del formulario
-      setFormData({
-        title: '',
-        type: '2D',
-        description: '',
-        files: [],
-        images: []
-      });
-      setActiveTab('content');
-    } else {
-      toast.error(data.message || 'Error al subir el asset');
+    images.forEach(image => {
+      uploadData.append('images', image.fileObject);
+    });
+
+    // 2) Recuperamos el token del usuario
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('Necesitas iniciar sesión para subir un asset');
+      return;
     }
-  } catch (error) {
-    console.error(error);
-    toast.error('Error en la conexión');
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+
+    try {
+      // 3) Enviamos la petición con la cabecera Authorization
+      const response = await fetch('/api/assets', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: uploadData
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success('Asset subido con éxito a Cloudify');
+        // Reset del formulario
+        setFormData({
+          title: '',
+          type: '2D',
+          description: '',
+          files: [],
+          images: []
+        });
+        setActiveTab('content');
+      } else {
+        toast.error(data.message || 'Error al subir el asset a Cloudify');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Error en la conexión con el servicio Cloudify');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="asset-upload">
       <h1>Subir un Asset</h1>
-      
+
       {/* Barra de pestañas */}
       <div className="tabs">
-        <button 
+        <button
           className={`tab ${activeTab === 'content' ? 'active' : ''}`}
           onClick={() => setActiveTab('content')}
         >
           Contenido y Archivos
         </button>
-        <button 
+        <button
           className={`tab ${activeTab === 'description' ? 'active' : ''}`}
           onClick={() => setActiveTab('description')}
         >
           Descripción
         </button>
-        <button 
+        <button
           className={`tab ${activeTab === 'images' ? 'active' : ''}`}
           onClick={() => setActiveTab('images')}
         >
@@ -187,12 +187,12 @@ const onSubmit = async (e) => {
           <div className="tab-content">
             <div className="form-group">
               <label className='txt-form-asset'>Nombre del Asset:</label>
-              <input 
-                type="text" 
-                name="title" 
-                value={title} 
-                onChange={onChange} 
-                required 
+              <input
+                type="text"
+                name="title"
+                value={title}
+                onChange={onChange}
+                required
               />
             </div>
             <div className="form-group">
@@ -208,8 +208,8 @@ const onSubmit = async (e) => {
             </div>
             <div className="form-group">
               <label className='txt-form-asset'>Archivos del Asset:</label>
-              <div 
-                {...getFileRootProps()} 
+              <div
+                {...getFileRootProps()}
                 className={`dropzone ${isFileDragActive ? 'active' : ''} ${isFileDragReject ? 'reject' : ''}`}
               >
                 <input {...getFileInputProps()} />
@@ -223,11 +223,12 @@ const onSubmit = async (e) => {
                     <>
                       <p className="dropzone-text">Arrastra y suelta archivos aquí</p>
                       <p className="dropzone-subtext">
-                            Formatos aceptados:
-                            <br />• Modelos 3D (.glb)
-                            <br />• Audio (.mp3)
-                            <br />• Video (.mp4)
-                            <br />Máximo: 10 archivos
+                        Formatos aceptados:
+                        <br />• Modelos 3D (.glb)
+                        <br />• Audio (.mp3)
+                        <br />• Video (.mp4)
+                        <br />Máximo: 10 archivos
+                        <br />Los archivos serán almacenados en Cloudify
                       </p>
                     </>
                   )}
@@ -247,8 +248,8 @@ const onSubmit = async (e) => {
                           <span className="file-name">{file.name}</span>
                           <span className="file-size">{file.size}</span>
                         </div>
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           onClick={() => removeFile(index, 'files')}
                           className="remove-btn"
                         >
@@ -268,10 +269,10 @@ const onSubmit = async (e) => {
           <div className="tab-content">
             <div className="form-group">
               <label className='txt-form-asset'>Descripción del Asset <span>(Describe detalladamente tu contenido)</span></label>
-              <textarea 
-                name="description" 
-                value={description} 
-                onChange={onChange} 
+              <textarea
+                name="description"
+                value={description}
+                onChange={onChange}
                 rows="10"
                 placeholder='Texto...'
                 required
@@ -285,8 +286,8 @@ const onSubmit = async (e) => {
           <div className="tab-content">
             <div className="form-group">
               <label className='txt-form-asset'>Imágenes del Asset</label>
-              <div 
-                {...getImageRootProps()} 
+              <div
+                {...getImageRootProps()}
                 className={`dropzone ${isImageDragActive ? 'active' : ''} ${isImageDragReject ? 'reject' : ''}`}
               >
                 <input {...getImageInputProps()} />
@@ -300,8 +301,9 @@ const onSubmit = async (e) => {
                     <>
                       <p className="dropzone-text">Arrastra y suelta imágenes aquí</p>
                       <p className="dropzone-subtext">
-                            Formatos aceptados: .jpg, .jpeg, .png, .gif
-                            <br />Máximo: 5 imágenes
+                        Formatos aceptados: .jpg, .jpeg, .png, .gif
+                        <br />Máximo: 5 imágenes
+                        <br />Las imágenes serán almacenadas en Cloudify
                       </p>
                     </>
                   )}
@@ -321,8 +323,8 @@ const onSubmit = async (e) => {
                           <span className="file-name">{image.name}</span>
                           <span className="file-size">{image.size}</span>
                         </div>
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           onClick={() => removeFile(index, 'images')}
                           className="remove-btn"
                         >
@@ -343,7 +345,7 @@ const onSubmit = async (e) => {
             {isSubmitting ? (
               <>
                 <FiUpload className="spinner" />
-                Subiendo...
+                Subiendo a Cloudify...
               </>
             ) : (
               'Subir Asset'

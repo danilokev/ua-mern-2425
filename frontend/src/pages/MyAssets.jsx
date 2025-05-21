@@ -1,4 +1,3 @@
-// frontend/src/pages/MyAssets.jsx
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import '../styles/myAssets.css'
@@ -45,23 +44,41 @@ export default function MyAssets() {
     fetchAssets()
   }, [])
 
-  if (loading) return <p>Cargando tus assets…</p>
-  if (error)   return <p className="error">{error}</p>
-
   const getImageUrl = asset => {
-    if (asset.image) return asset.image
+    if (asset.image) {
+      if (asset.image.includes('cloudinary.com')) {
+        return asset.image.replace('/upload/', '/upload/f_auto,q_auto,w_300/')
+      }
+      return asset.image
+    }
+
+    // Si hay imágenes en el array, usamos la primera
     if (asset.images && asset.images.length > 0) {
+      if (asset.images[0].includes('cloudinary.com')) {
+        return asset.images[0].replace('/upload/', '/upload/f_auto,q_auto,w_300/')
+      }
       return asset.images[0]
     }
+
+    // Imagen por defecto
     return '/images/default-avatar.jpg'
   }
+
+  if (loading) return <p>Cargando tus assets…</p>
+  if (error) return <p className="error">{error}</p>
 
   return (
     <div className="my-assets">
       <h1>Mis Assets</h1>
       {assets.length === 0
-        ? <p>No tienes ningún asset aún.</p>
-        : (
+        ? (
+          <>
+            <p>No tienes ningún asset aún.</p>
+            <Link to="/upload" className='btn btn-asset'>
+              Subir nuevo asset
+            </Link>
+          </>
+        ) : (
           <div className="container-assets">
             {assets.map(asset => (
               <div key={asset._id} className="assets-card">
@@ -75,6 +92,9 @@ export default function MyAssets() {
                 />
                 <div className="asset-card__body">
                   <h3>{asset.title}</h3>
+                  <p className="asset-upload-date">
+                    {new Date(asset.uploadDate).toLocaleDateString()}
+                  </p>
                   <p className="asset-card__type">{asset.type}</p>
                   <Link to={`/assets/${asset._id}`} className="asset-card__btn">
                     Ver detalle

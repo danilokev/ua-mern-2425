@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import { register, reset } from '../features/auth/authSlice';
 import Spinner from '../components/Spinner';
 
-
 function Register() {
   const [formData, setFormData] = useState({
     name: '',
@@ -13,27 +12,26 @@ function Register() {
     password: '',
     password2: '',
   });
+  const [avatar, setAvatar] = useState(null);
 
   const { name, email, password, password2 } = formData;
 
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth)
-
+  const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (isError) {
-      toast.error(message)
+      toast.error(message);
     }
 
     if (isSuccess || user) {
-      navigate('/')
+      navigate('/');
     }
 
-    dispatch(reset())
-  }, [user, isError, isSuccess, message, navigate, dispatch])
-
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const onChange = (e) => {
     setFormData((prevState) => ({
@@ -42,23 +40,41 @@ function Register() {
     }));
   };
 
+  const onFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      setAvatar(file);
+    } else {
+      toast.error('Por favor, selecciona una imagen válida');
+      setAvatar(null);
+    }
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
     if (password !== password2) {
-      toast.error('Passwords do not match')
-    } else {
-      const userData = {
-        name,
-        email,
-        password,
-      }
-      dispatch(register(userData))
+      toast.error('Las contraseñas no coinciden');
+      return;
     }
-    console.log(formData);
+    if (!avatar) {
+      toast.error('Por favor, selecciona una foto de perfil');
+      return;
+    }
+
+    const formDataToSend = new FormData();
+    formDataToSend.append('name', name);
+    formDataToSend.append('email', email);
+    formDataToSend.append('password', password);
+    formDataToSend.append('avatar', avatar);
+
+    dispatch(register(formDataToSend));
+    console.log('Form Data:', { name, email, password, avatar });
   };
+
   if (isLoading) {
-    return <Spinner />
+    return <Spinner />;
   }
+
   return (
     <main className='min-h-screen main-container'>
       <div className='form-container'>
@@ -88,6 +104,7 @@ function Register() {
                 name='email'
                 value={email}
                 onChange={onChange}
+                required
               />
             </div>
             <div className='form-group'>
@@ -99,6 +116,7 @@ function Register() {
                 name='password'
                 value={password}
                 onChange={onChange}
+                required
               />
             </div>
             <div className='form-group'>
@@ -110,6 +128,19 @@ function Register() {
                 name='password2'
                 value={password2}
                 onChange={onChange}
+                required
+              />
+            </div>
+            <div className='form-group'>
+              <label htmlFor="avatar">Foto de perfil: <abbr title="obligatorio">*</abbr></label>
+              <input
+                type='file'
+                className='form-control'
+                id='avatar'
+                name='avatar'
+                accept='image/*'
+                onChange={onFileChange}
+                required
               />
             </div>
             <div className='form-group'>
