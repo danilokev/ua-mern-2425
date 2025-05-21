@@ -16,6 +16,7 @@ import Profile from './pages/Profile'
 import AssetView from './pages/AssetView'
 import DeleteAccount from './pages/DeleteAccount'
 import MyAssets    from './pages/MyAssets'
+import SearchPage    from './pages/SearchPage'
 import AssetDetail    from './pages/AssetDetail'
 
 
@@ -29,6 +30,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path="/assetview" element={<AssetView />} />
+          <Route path="/search" element={<SearchPage />} />
           
           <Route path='/' element={
             <PrivateRoute>

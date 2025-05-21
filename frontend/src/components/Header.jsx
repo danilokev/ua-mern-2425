@@ -14,15 +14,18 @@ function Header() {
   const [searchTerm, setSearchTerm] = useState('');
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
 
+  const handleSearch = (e) => {
+    e.preventDefault()
+    const trimmed = searchTerm.trim()
+    if (trimmed) {
+      navigate(`/search?q=${encodeURIComponent(trimmed)}`)
+    }
+  }
+
   const onLogout = () => {
     dispatch(logout());
     dispatch(reset());
     navigate('/');
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    console.log('Search term:', searchTerm);
   };
 
   // Escuchamos cambios en el localStorage para sincronizar el tema
@@ -42,21 +45,22 @@ function Header() {
   return (
     <header className='header'>
       <section className='header-main'>
-      <ThemeToggle />
+        <ThemeToggle />
 
         <div className='logo'>
           <Link to='/'>
             <img
               src={theme === 'dark' ? logoWhite : logoBlack}
-              alt="Logo de la empresa MolaMazoGames"
+              alt='Logo de la empresa MolaMazoGames'
               className='logo-img'
             />
           </Link>
         </div>
+
         <form onSubmit={handleSearch}>
           <p className='search-input'>
             <input
-              type="text"
+              type='text'
               placeholder='Buscar assets...'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -100,7 +104,7 @@ function Header() {
         </div>
       </section>
     </header>
-  );
+  )
 }
 
 export default Header;

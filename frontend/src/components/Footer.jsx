@@ -1,16 +1,37 @@
 import { FaTwitter, FaInstagram, FaYoutube, FaGithub } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react';
+
 import logo from '../assets/logo_b.png' 
+import logon from '../assets/logo_n.png' 
 import '../styles/Footer.css'
+import ThemeToggle from './ThemeToggle';
 
 export default function Footer() {
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const currentTheme = localStorage.getItem('theme') || 'dark';
+      setTheme(currentTheme);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
   return (
     <footer className="footer">
+      <ThemeToggle />
+
       {/* Bloque superior con 4 columnas */}
       <div className="footer-top">
         {/* Columna 1: logo + redes + dirección */}
         <div className="footer-col footer-col--logo">
-          <img src={logo} alt="MolamazoGames" className="footer-logo" />
+          <img src={theme === 'dark' ? logo : logon} alt="MolamazoGames" className="footer-logo" />
           <div className="footer-social">
             <a href="#"><FaTwitter /></a>
             <a href="#"><FaInstagram /></a>
