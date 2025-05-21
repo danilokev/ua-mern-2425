@@ -1,7 +1,7 @@
 'use strict'
 
 const Asset = require('../models/assetModel')
-const { uploadToDropbox } = require('./dropboxService')
+const { uploadToCloudify } = require('./cloudifyService')
 
 // Crea un nuevo asset
 const createAsset = async (req, res) => {
@@ -15,7 +15,7 @@ const createAsset = async (req, res) => {
         const ext      = f.originalname.split('.').pop()
         const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
         // Metemos cada usuario en su carpeta
-        const url = await uploadToDropbox(f.buffer, `/assets/${userId}`, filename)
+        const url = await uploadToCloudify(f.buffer, `assets/${userId}`, filename)
         fileUrls.push(url)
       }
     }
@@ -26,7 +26,7 @@ const createAsset = async (req, res) => {
       for (const img of req.files['images']) {
         const ext      = img.originalname.split('.').pop()
         const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
-        const url = await uploadToDropbox(img.buffer, `/images/${userId}`, filename)
+        const url = await uploadToCloudify(img.buffer, `images/${userId}`, filename)
         imageUrls.push(url)
       }
     }
