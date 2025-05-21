@@ -11,32 +11,21 @@ function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAssets = async () => {
+    const fetchLatestAssets = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          toast.error('Necesitas iniciar sesión para ver los assets');
-          return;
-        }
-
-        const response = await fetch('/api/assets', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
+        const response = await fetch('/api/assets/latest');
         const data = await response.json();
 
         if (response.ok) {
-          // Map database fields to expected structure
           const validAssets = data
             .filter(asset => asset._id)
             .map(asset => ({
               id: asset._id,
-              title: asset.title,
-              type: asset.type,
-              description: asset.description,
-              images: asset.image ? [{ url: asset.image }] : asset.images || [],
-              files: asset.file ? [{ url: asset.file, name: asset.file.split('/').pop() }] : asset.files || [],
+              title: asset.title || 'Sin título',
+              type: asset.type || 'Desconocido',
+              description: asset.description || 'Sin descripción',
+              images: asset.images && asset.images.length > 0 ? asset.images.map(img => ({ url: img })) : (asset.image ? [{ url: asset.image }] : []),
+              files: asset.files && asset.files.length > 0 ? asset.files.map(f => ({ url: f, name: f.split('/').pop() })) : (asset.file ? [{ url: asset.file, name: asset.file.split('/').pop() }] : []),
               uploadDate: asset.uploadDate,
               author: {
                 name: asset.user?.name || 'Desconocido',
@@ -51,17 +40,17 @@ function Dashboard() {
           }
           setAssets(validAssets);
         } else {
-          toast.error(data.message || 'Error al cargar los assets');
+          toast.error(data.message || 'Error al cargar los assets más recientes');
         }
       } catch (error) {
         console.error(error);
-        toast.error('Error en la conexión con el servicio');
+        toast.error('Error en la conexión con el servicio para cargar assets recientes');
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchAssets();
+    fetchLatestAssets();
   }, []);
 
   return (
@@ -106,13 +95,14 @@ function Dashboard() {
                       src={asset.images[0]?.url || 'https://via.placeholder.com/300'}
                       alt={`Imagen de ${asset.title}`}
                     />
-                    <h3>{asset.title || 'Sin título'}</h3>
-                    <span className="tag">{asset.type || 'Desconocido'}</span>
+                    <h3>{asset.title}</h3>
+                    <span className="tag">{asset.type}</span>
+                    <p className="author-name">Por: {asset.author.name}</p>
                   </article>
                 </Link>
               ))
             ) : (
-              <p>No hay assets disponibles</p>
+              <p>No hay assets disponibles recientemente.</p>
             )}
           </div>
         )}
