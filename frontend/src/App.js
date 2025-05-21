@@ -12,12 +12,11 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AssetUpload from './pages/AssetUpload';
-import Profile from './pages/Profile'
-import AssetView from './pages/AssetView'
-import DeleteAccount from './pages/DeleteAccount'
-import MyAssets    from './pages/MyAssets'
-import AssetDetail    from './pages/AssetDetail'
-
+import Profile from './pages/Profile';
+import AssetView from './pages/AssetView';
+import DeleteAccount from './pages/DeleteAccount';
+import MyAssets from './pages/MyAssets';
+import AssetDetail from './pages/AssetDetail';
 
 function App() {
   return (
@@ -28,27 +27,24 @@ function App() {
           <Route path='/' element={<Dashboard />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
-          <Route path="/assetview" element={<AssetView />} />
           
           <Route path='/' element={
             <PrivateRoute>
               <SidebarLayout />
             </PrivateRoute>
           }>
-            <Route path="/my-assets" element={<MyAssets />} />
-            <Route path="/assets/:id" element={<AssetDetail />} />
+            <Route path='/my-assets' element={<MyAssets />} />
+            <Route path='/assets/:id' element={<AssetDetail />} />
+            <Route path='/asset/:id' element={<AssetView />} />
             <Route path='/upload' element={<AssetUpload />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/delete-account' element={<DeleteAccount />} />
-            
           </Route>
 
           <Route path='*' element={<div>Página no encontrada</div>} />
         </Routes>
 
-        {/* StickyNavbar añadido aquí para estar siempre visible */}
         <StickyNavbar />
-        
         <Footer />
       </Router>
       <ToastContainer />
