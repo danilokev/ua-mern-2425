@@ -31,9 +31,6 @@ function SidebarComponent() {
             <MenuItem className='sidebar-menu__item' component={<Link to="/upload" />}>
               <FaUpload /> Subir Asset
             </MenuItem>
-            <MenuItem className='sidebar-menu__item' component={<Link to="/assetview" />}>
-              <FaUpload /> Acceder al asset de prueba
-            </MenuItem>
             <MenuItem className='sidebar-menu__item' component={<Link to="#" />}>
               <FaHistory /> Historial
             </MenuItem>
@@ -41,7 +38,7 @@ function SidebarComponent() {
               <MenuItem className='sidebar-menu__item' component={<Link to="/delete-account" />}>
                 <FaUserSlash /> Darse de baja
               </MenuItem>
-              <MenuItem className='sidebar-menu__item'>
+              <MenuItem className='sidebar-menu__item' component={<Link to="/accessibility" />}>
                 <FaUniversalAccess /> Accesibilidad
               </MenuItem>
             </SubMenu>

@@ -18,6 +18,12 @@ import DeleteAccount from './pages/DeleteAccount'
 import MyAssets    from './pages/MyAssets'
 import SearchPage    from './pages/SearchPage'
 import AssetDetail    from './pages/AssetDetail'
+import AccessibilityPage from './pages/Accessibility';
+
+import ContactPage from './pages/Contact';
+import DevsPage from './pages/Developers';
+import TermsPage from './pages/Terms';
+import PrivacyPage from './pages/Privacy';
 
 
 function App() {
@@ -43,6 +49,14 @@ function App() {
             <Route path='/upload' element={<AssetUpload />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/delete-account' element={<DeleteAccount />} />
+            <Route path="/accessibility" element={<AccessibilityPage />} />
+
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/devs" element={<DevsPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+
+
           </Route>
 
           <Route path='*' element={<div>Página no encontrada</div>} />

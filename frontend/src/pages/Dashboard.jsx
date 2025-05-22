@@ -58,26 +58,30 @@ function Dashboard() {
       <section aria-labelledby="categories-heading">
         <h2 id="categories-heading">Categorías principales</h2>
         <div className="categories">
-          <article className="category">
-            <img
-              src={cat3D}
-              alt="Icono 3D"
-            />
+        <Link to="/search?tag=3D" className="category">
+          <article>
+            <img src={cat3D} alt="Icono 3D" />
             <h3>3D</h3>
             <p>Explora modelos y escenas 3D</p>
           </article>
+        </Link>
 
-          <article className="category">
+        <Link to="/search?tag=2D" className="category">
+          <article>
             <img src={cat2D} alt="Icono 2D" />
             <h3>2D</h3>
             <p>Descubre ilustraciones y sprites</p>
           </article>
+        </Link>
 
-          <article className="category">
+        <Link to="/search?tag=Add-Ons" className="category">
+          <article>
             <img src={catAddon} alt="Icono Add-Ons" />
             <h3>Add-Ons</h3>
             <p>Complementos y extras para tu juego</p>
           </article>
+        </Link>
+
         </div>
       </section>
 

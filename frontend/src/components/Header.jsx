@@ -103,7 +103,24 @@ function Header() {
           </ul>
         </div>
       </section>
+
+      {/* Lista de etiquetas */}
+      <nav className='tag-nav'>
+        <ul className='tag-list'>
+          {['Pixel Art', 'Isométrico',
+      'UI', 'Iconos', 'Audio', 'Música',
+      'VFX', 'Animaciones', 'Fondos', 'Tilesets'].map((tag) => (
+            <li key={tag}>
+              <Link to={`/search?tag=${encodeURIComponent(tag)}`} className='tag-link'>
+                {tag}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
     </header>
+
   )
 }
 

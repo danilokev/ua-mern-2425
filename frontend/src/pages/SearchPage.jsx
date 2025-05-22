@@ -1,39 +1,7 @@
-import { useLocation } from 'react-router-dom'
-import { useMemo } from 'react'
-import asset1 from '../assets/terreno.png'
-import asset2 from '../assets/supermario.png'
+import { useState, useEffect, useMemo } from 'react'
+import { useLocation, Link } from 'react-router-dom'
 import '../styles/index.css'
-
-const allAssets = [
-  {
-    id: 1,
-    title: 'Terrenos',
-    tag: '3D',
-    image: asset1,
-    keywords: ['suelo', 'campo', 'terreno'],
-  },
-  {
-    id: 2,
-    title: 'Super Mario',
-    tag: '2D',
-    image: asset2,
-    keywords: ['mario', 'plataforma', 'sprite'],
-  },
-  {
-    id: 3,
-    title: 'Terrenos Pro',
-    tag: '3D',
-    image: asset1,
-    keywords: ['terreno', 'paisaje', 'montaña'],
-  },
-  {
-    id: 4,
-    title: 'Mario Retro',
-    tag: '2D',
-    image: asset2,
-    keywords: ['sprite', '8bit', 'retro', 'mario'],
-  },
-]
+import { toast } from 'react-toastify'
 
 function useQuery() {
   return new URLSearchParams(useLocation().search)
@@ -44,30 +12,90 @@ function SearchPage() {
   const keyword = query.get('q')?.toLowerCase() || ''
   const tag = query.get('tag')?.toUpperCase() || ''
 
+  const [assets, setAssets] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchAssets = async () => {
+      try {
+        const response = await fetch('/api/assets')
+        const data = await response.json()
+
+        if (response.ok) {
+          const validAssets = data
+            .filter(asset => asset._id)
+            .map(asset => ({
+              id: asset._id,
+              title: asset.title || 'Sin título',
+              type: asset.type || 'Desconocido',
+              description: asset.description || 'Sin descripción',
+              images: asset.images && asset.images.length > 0
+                ? asset.images.map(img => ({ url: img }))
+                : (asset.image ? [{ url: asset.image }] : []),
+              files: asset.files && asset.files.length > 0
+                ? asset.files.map(f => ({ url: f, name: f.split('/').pop() }))
+                : (asset.file ? [{ url: asset.file, name: asset.file.split('/').pop() }] : []),
+              uploadDate: asset.uploadDate,
+              author: {
+                name: asset.user?.name || 'Desconocido',
+                avatar: asset.user?.avatar || 'https://via.placeholder.com/50',
+                joinDate: asset.user?.joinDate || 'Desconocido',
+                assetsCount: asset.user?.assetsCount || 0,
+                rating: asset.user?.rating || 0,
+              }
+            }))
+          setAssets(validAssets)
+        } else {
+          toast.error(data.message || 'Error al cargar los assets')
+        }
+      } catch (err) {
+        console.error(err)
+        toast.error('Error al conectar con el servidor')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchAssets()
+  }, [])
+
   const filteredAssets = useMemo(() => {
-    return allAssets.filter((asset) => {
+    return assets.filter(asset => {
       const matchesKeyword =
         keyword === '' ||
         asset.title.toLowerCase().includes(keyword) ||
-        asset.keywords.some((k) => k.includes(keyword))
-      const matchesTag = tag === '' || asset.tag === tag
+        asset.description.toLowerCase().includes(keyword)
+        const matchesTag =
+          tag === '' ||
+          asset.type.toUpperCase() === tag ||
+          asset.title.toLowerCase().includes(tag.toLowerCase()) ||
+          asset.description.toLowerCase().includes(tag.toLowerCase())
+      
       return matchesKeyword && matchesTag
     })
-  }, [keyword, tag])
+  }, [assets, keyword, tag])
 
-  return (
-    <main className="search-page">
+  return (    
+    <main className="dashboard">
       <h2>Resultados de búsqueda</h2>
-      {filteredAssets.length === 0 ? (
+      {isLoading ? (
+        <p>Cargando...</p>
+      ) : filteredAssets.length === 0 ? (
         <p>No se encontraron resultados para tu búsqueda.</p>
       ) : (
         <div className="assets-grid">
-          {filteredAssets.map((asset) => (
-            <article key={asset.id} className="asset-card">
-              <img src={asset.image} alt={`Imagen de ${asset.title}`} />
-              <h3>{asset.title}</h3>
-              <span className="tag">{asset.tag}</span>
-            </article>
+          {filteredAssets.map(asset => (
+            <Link key={asset.id} to={`/asset/${asset.id}`} className="asset-card-link">
+              <article className="asset-card">
+                <img
+                  src={asset.images[0]?.url || 'https://via.placeholder.com/300'}
+                  alt={`Imagen de ${asset.title}`}
+                />
+                <h3>{asset.title}</h3>
+                <span className="tag">{asset.type}</span>
+                <p className="author-name">Por: {asset.author.name}</p>
+              </article>
+            </Link>
           ))}
         </div>
       )}

@@ -17,31 +17,34 @@ function AccessibilityPage() {
       <h2>Opciones de accesibilidad</h2>
 
       <div className='toggle-group'>
-        <label>
+        <label className='switch'>
           <input
             type='checkbox'
             checked={largeText}
             onChange={() => setLargeText(!largeText)}
           />
-          Aumentar tamaño de fuente
+          <span className='slider'></span>
+          <span className='label-text'>Aumentar tamaño de fuente</span>
         </label>
 
-        <label>
+        <label className='switch'>
           <input
             type='checkbox'
             checked={highContrast}
             onChange={() => setHighContrast(!highContrast)}
           />
-          Activar alto contraste
+          <span className='slider'></span>
+          <span className='label-text'>Activar alto contraste</span>
         </label>
 
-        <label>
+        <label className='switch'>
           <input
             type='checkbox'
             checked={reduceMotion}
             onChange={() => setReduceMotion(!reduceMotion)}
           />
-          Desactivar animaciones
+          <span className='slider'></span>
+          <span className='label-text'>Desactivar animaciones</span>
         </label>
       </div>
     </main>
