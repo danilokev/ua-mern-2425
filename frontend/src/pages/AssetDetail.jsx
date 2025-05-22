@@ -1,7 +1,7 @@
 // frontend/src/pages/AssetDetail.jsx
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { FaArrowLeft, FaFile, FaImage } from 'react-icons/fa'
+import { FaArrowLeft, FaFile, FaImage, FaThumbsUp } from 'react-icons/fa'
 import '../styles/assetDetail.css'
 
 export default function AssetDetail() {
@@ -10,24 +10,36 @@ export default function AssetDetail() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  const [comments, setComments] = useState([])
+  const [newComment, setNewComment] = useState('')
+
+  const [likesCount, setLikesCount] = useState(0)
+  const [liked, setLiked] = useState(false)
+
   useEffect(() => {
     const fetchAsset = async () => {
       try {
-        // 1) Leer el token de localStorage
         const token = localStorage.getItem('token')
         if (!token) throw new Error('No estás autenticado')
 
-        // 2) Añadir Authorization header
         const res = await fetch(`/api/assets/${id}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
           }
         })
-
         if (!res.ok) throw new Error(`Error ${res.status}`)
+
         const data = await res.json()
         setAsset(data)
+
+        // Inicializar comentarios y likes
+        setComments(data.comments || [])
+        setLikesCount(data.likes ? data.likes.length : 0)
+        // Comprueba si el usuario actual ya ha dado like
+        const meId = localStorage.getItem('userId')
+        setLiked(data.likes?.some(uid => uid === meId))
+
       } catch (err) {
         console.error(err)
         setError('No se pudo cargar el detalle del asset')
@@ -35,8 +47,53 @@ export default function AssetDetail() {
         setLoading(false)
       }
     }
+
     fetchAsset()
   }, [id])
+
+  const handleSubmitComment = async e => {
+    e.preventDefault()
+    if (!newComment.trim()) return
+
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`/api/assets/${id}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ text: newComment.trim() })
+      })
+      if (!res.ok) throw new Error(`Error ${res.status}`)
+      const updatedComments = await res.json()
+      setComments(updatedComments)
+      setNewComment('')
+    } catch (err) {
+      console.error(err)
+      alert('Error al enviar el comentario')
+    }
+  }
+
+  const handleToggleLike = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`/api/assets/${id}/likes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      if (!res.ok) throw new Error(`Error ${res.status}`)
+      const { likesCount: newCount, liked: nowLiked } = await res.json()
+      setLikesCount(newCount)
+      setLiked(nowLiked)
+    } catch (err) {
+      console.error(err)
+      alert('Error al procesar like')
+    }
+  }
 
   if (loading) return <p>Cargando detalle…</p>
   if (error)   return <p className="error">{error}</p>
@@ -98,6 +155,44 @@ export default function AssetDetail() {
       <div className="description">
         <h3>Descripción</h3>
         <p>{asset.description}</p>
+      </div>
+
+      <div className="likes-section">
+        <button
+          className={`btn-like ${liked ? 'liked' : ''}`}
+          onClick={handleToggleLike}
+        >
+          <FaThumbsUp /> {likesCount} {liked ? 'Ya no me gusta' : 'Me gusta'}
+        </button>
+      </div>
+
+      <div className="comments-section">
+        <h3>Comentarios ({comments.length})</h3>
+        <form onSubmit={handleSubmitComment} className="comment-form">
+          <textarea
+            value={newComment}
+            onChange={e => setNewComment(e.target.value)}
+            placeholder="Escribe un comentario…"
+            required
+          />
+          <button type="submit">Enviar</button>
+        </form>
+        <ul className="comment-list">
+          {comments.map(c => (
+            <li key={c._id} className="comment-item">
+              <img
+                src={c.user.avatar}
+                alt={c.user.name}
+                className="avatar-sm"
+              />
+              <div className="comment-body">
+                <strong>{c.user.name}</strong>
+                <p>{c.text}</p>
+                <small>{new Date(c.createdAt).toLocaleDateString()}</small>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   )

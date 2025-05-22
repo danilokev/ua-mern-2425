@@ -1,283 +1,280 @@
-import '../styles/assetview.css';
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { FiDownload, FiChevronLeft, FiChevronRight, FiThumbsUp, FiThumbsDown } from 'react-icons/fi';
-import { toast } from 'react-toastify';
+// frontend/src/pages/AssetView.jsx
+import '../styles/assetview.css'
+import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import {
+  FiDownload,
+  FiChevronLeft,
+  FiChevronRight,
+  FiThumbsUp
+} from 'react-icons/fi'
+import { toast } from 'react-toastify'
 
-function AssetView() {
-  const { id } = useParams(); // Get asset _id from URL
-  const [asset, setAsset] = useState({
-    title: '',
-    description: '',
-    type: '',
-    uploadDate: '',
-    lastUpdated: '',
-    storage: '',
-    images: [],
-    files: [],
-    author: {
-      name: '',
-      avatar: '',
-      joinDate: '',
-      assetsCount: 0,
-      rating: 0
-    },
-    comments: [
-      { user: 'Usuario1', text: 'Excelentes texturas, las he usado en mi último proyecto.', positive: true, date: '2023-05-18' },
-      { user: 'Usuario2', text: 'Buen paquete, pero algunas texturas tienen baja resolución.', positive: false, date: '2023-05-20' }
-    ],
-    ratings: {
-      positive: 45,
-      negative: 3
-    }
-  });
-  const [activeTab, setActiveTab] = useState('info');
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+export default function AssetView() {
+  const { id } = useParams()
+  const [asset, setAsset] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  // Gallery & files
+  const [gallery, setGallery] = useState([])    // [{ url, name }]
+  const [fileList, setFileList] = useState([])  // [{ url, name }]
+
+  // UI state
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [activeTab, setActiveTab] = useState('info')
+
+  // Comments & likes
+  const [comments, setComments] = useState([])
+  const [newComment, setNewComment] = useState('')
+  const [likesCount, setLikesCount] = useState(0)
+  const [liked, setLiked] = useState(false)
 
   useEffect(() => {
     const fetchAsset = async () => {
       try {
-        const token = localStorage.getItem('token');
-        console.log('Token:', token);
-        if (!token) {
-          throw new Error('No estás autenticado');
-        }
+        const token = localStorage.getItem('token')
+        if (!token) throw new Error('No estás autenticado')
 
-        const response = await fetch(`/api/assets/${id}`, {
+        const res = await fetch(`/api/assets/${id}`, {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-            'Cache-Control': 'no-cache'
+            'Authorization': `Bearer ${token}`
           }
-        });
+        })
+        if (!res.ok) {
+          const err = await res.json()
+          throw new Error(err.message || res.status)
+        }
+        const data = await res.json()
 
-        console.log('API Response:', response.status, await response.clone().json());
-
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(data.message || `Error ${response.status}`);
+        // Build gallery array
+        const images = []
+        if (data.image) {
+          images.push({
+            url: data.image,
+            name: data.image.split('/').pop()
+          })
+        }
+        if (Array.isArray(data.images)) {
+          data.images.forEach(u => {
+            if (u !== data.image) {
+              images.push({ url: u, name: u.split('/').pop() })
+            }
+          })
         }
 
-        const data = await response.json();
-        // Calculate total storage (simplified, assuming no size data)
-        const totalStorage = 0; // Backend should provide file sizes if needed
-        const formatStorage = (bytes) => {
-          if (bytes === 0) return '0 Bytes';
-          const k = 1024;
-          const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-          const i = Math.floor(Math.log(bytes) / Math.log(k));
-          return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        };
+        // Build file list array
+        const files = []
+        if (data.file) {
+          files.push({
+            url: data.file,
+            name: data.file.split('/').pop()
+          })
+        }
+        if (Array.isArray(data.files)) {
+          data.files.forEach(u => {
+            if (u !== data.file) {
+              files.push({ url: u, name: u.split('/').pop() })
+            }
+          })
+        }
 
-        setAsset(prev => ({
-          ...prev,
-          id: data._id,
-          title: data.title || 'Sin título',
-          description: data.description || 'Sin descripción',
-          type: data.type || 'Desconocido',
-          uploadDate: data.uploadDate || new Date().toISOString(),
-          lastUpdated: data.updatedAt || new Date().toISOString(),
-          storage: formatStorage(totalStorage),
-          images: data.image ? [{ url: data.image }] : data.images?.map(img => ({ url: img })) || [],
-          files: data.file
-            ? [{ name: data.file.split('/').pop(), size: data.fileSize || 'Desconocido' }]
-            : data.files?.map(file => ({
-                name: file.split('/').pop(),
-                size: file.size || 'Desconocido'
-              })) || [],
-          author: {
-            name: data.user?.name || 'Desconocido',
-            avatar: data.user?.avatar || 'https://via.placeholder.com/50',
-            joinDate: data.user?.joinDate || 'Desconocido',
-            assetsCount: data.user?.assetsCount || 0,
-            rating: data.user?.rating || 0
-          }
-        }));
+        // Set all state
+        setAsset(data)
+        setGallery(images)
+        setFileList(files)
+        setComments(data.comments || [])
+        setLikesCount(data.likes?.length || 0)
+        setLiked(data.likes?.includes(localStorage.getItem('userId')))
       } catch (err) {
-        console.error('Fetch error:', err);
-        setError('No se pudo cargar el detalle del asset: ' + err.message);
-        toast.error('No se pudo cargar el detalle del asset');
+        console.error(err)
+        setError(err.message)
+        toast.error('Error cargando asset: ' + err.message)
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchAsset();
-  }, [id]);
+    fetchAsset()
+  }, [id])
 
-  const nextImage = () => {
-    setCurrentImageIndex((prevIndex) => 
-      prevIndex === asset.images.length - 1 ? 0 : prevIndex + 1
-    );
-  };
+  // Gallery nav
+  const nextImage = () =>
+    setCurrentImageIndex(i =>
+      gallery.length > 0 ? (i + 1) % gallery.length : 0
+    )
+  const prevImage = () =>
+    setCurrentImageIndex(i =>
+      gallery.length > 0
+        ? (i - 1 + gallery.length) % gallery.length
+        : 0
+    )
 
-  const prevImage = () => {
-    setCurrentImageIndex((prevIndex) => 
-      prevIndex === 0 ? asset.images.length - 1 : prevIndex - 1
-    );
-  };
+  // Submit a new comment
+  const handleSubmitComment = async e => {
+    e.preventDefault()
+    if (!newComment.trim()) return
 
-  const selectImage = (index) => {
-    setCurrentImageIndex(index);
-  };
-
-  const handleDownload = async () => {
     try {
-      const token = localStorage.getItem('token');
-      console.log('Download Token:', token);
-      if (!token) {
-        toast.error('No estás autenticado');
-        return;
-      }
-
-      const response = await fetch(`/api/assets/${id}/download`, {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`/api/assets/${id}/comments`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-          'Cache-Control': 'no-cache'
-        }
-      });
-      console.log('Download Response:', response.status, await response.clone().json());
-
-      if (response.ok) {
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${asset.title || 'asset'}.zip`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        toast.success('Descarga iniciada');
-      } else {
-        const data = await response.json();
-        toast.error(data.message || `Error al descargar el asset (Código: ${response.status})`);
-      }
-    } catch (error) {
-      console.error('Download error:', error);
-      toast.error('Error en la conexión con el servidor');
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ text: newComment.trim() })
+      })
+      if (!res.ok) throw new Error('No se pudo publicar el comentario')
+      const updated = await res.json()
+      setComments(updated)
+      setNewComment('')
+      toast.success('Comentario añadido')
+    } catch (err) {
+      console.error(err)
+      toast.error(err.message)
     }
-  };
-
-  if (isLoading) {
-    return <p>Cargando detalle…</p>;
   }
 
-  if (error) {
-    return <p className="error">{error}</p>;
+  // Toggle like/unlike
+  const handleToggleLike = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`/api/assets/${id}/likes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      if (!res.ok) throw new Error('No se pudo procesar like')
+      const { likesCount: count, liked: nowLiked } = await res.json()
+      setLikesCount(count)
+      setLiked(nowLiked)
+    } catch (err) {
+      console.error(err)
+      toast.error(err.message)
+    }
   }
+
+  // Download all files
+  const handleDownload = async () => {
+    try {
+      const token = localStorage.getItem('token')
+      const res = await fetch(`/api/assets/${id}/download`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if (!res.ok) throw new Error('Falló descarga')
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${asset.title || 'asset'}.zip`
+      document.body.appendChild(a)
+      a.click()
+      URL.revokeObjectURL(url)
+      toast.success('Descarga iniciada')
+    } catch (err) {
+      console.error(err)
+      toast.error('No se pudo descargar')
+    }
+  }
+
+  if (isLoading) return <p>Cargando detalle…</p>
+  if (error) return <p className="error">{error}</p>
+  if (!asset) return <p>Asset no encontrado</p>
 
   return (
     <div className="asset-view container">
       <div className="asset-layout">
-        {/* Columna izquierda */}
+        {/* Left column: gallery + tabs */}
         <div className="asset-left">
-          {/* Galería de imágenes */}
           <div className="image-gallery">
-            <div className="main-image-container">
-              <button className="nav-button left" onClick={prevImage} disabled={asset.images.length <= 1}>
-                <FiChevronLeft size={24} />
-              </button>
-              <img 
-                src={asset.images[currentImageIndex]?.url || 'https://via.placeholder.com/800x500'} 
-                alt={`Vista previa ${currentImageIndex + 1}`}
-                className="main-image"
-              />
-              <button className="nav-button right" onClick={nextImage} disabled={asset.images.length <= 1}>
-                <FiChevronRight size={24} />
-              </button>
-            </div>
+            <button
+              className="nav-button left"
+              onClick={prevImage}
+              disabled={gallery.length <= 1}
+            >
+              <FiChevronLeft size={24} />
+            </button>
+            <img
+              className="main-image"
+              src={gallery[currentImageIndex]?.url}
+              alt={gallery[currentImageIndex]?.name}
+            />
+            <button
+              className="nav-button right"
+              onClick={nextImage}
+              disabled={gallery.length <= 1}
+            >
+              <FiChevronRight size={24} />
+            </button>
+
             <div className="thumbnail-container">
-              {asset.images.map((image, index) => (
+              {gallery.map((img, idx) => (
                 <img
-                  key={index}
-                  src={image.url || 'https://via.placeholder.com/100'}
-                  alt={`Miniatura ${index + 1}`}
-                  className={`thumbnail ${index === currentImageIndex ? 'active' : ''}`}
-                  onClick={() => selectImage(index)}
+                  key={idx}
+                  className={`thumbnail ${
+                    idx === currentImageIndex ? 'active' : ''
+                  }`}
+                  src={img.url}
+                  alt={img.name}
+                  onClick={() => setCurrentImageIndex(idx)}
                 />
               ))}
             </div>
           </div>
 
-          {/* Pestañas de contenido */}
           <div className="asset-tabs">
             <div className="tabs">
-              <button 
-                className={`tab ${activeTab === 'info' ? 'active' : ''}`}
-                onClick={() => setActiveTab('info')}
-              >
-                Información
-              </button>
-              <button 
-                className={`tab ${activeTab === 'files' ? 'active' : ''}`}
-                onClick={() => setActiveTab('files')}
-              >
-                Archivos contenidos
-              </button>
-              <button 
-                className={`tab ${activeTab === 'versions' ? 'active' : ''}`}
-                onClick={() => setActiveTab('versions')}
-              >
-                Versiones
-              </button>
-              <button 
-                className={`tab ${activeTab === 'comments' ? 'active' : ''}`}
-                onClick={() => setActiveTab('comments')}
-              >
-                Comentarios
-              </button>
-              <button 
-                className={`tab ${activeTab === 'author' ? 'active' : ''}`}
-                onClick={() => setActiveTab('author')}
-              >
-                Autor
-              </button>
+              {['info', 'files', 'versions', 'comments', 'author'].map(tab => (
+                <button
+                  key={tab}
+                  className={`tab ${activeTab === tab ? 'active' : ''}`}
+                  onClick={() => setActiveTab(tab)}
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
             </div>
 
             <div className="tab-content">
               {activeTab === 'info' && (
                 <div className="info-content">
                   <h3>Descripción</h3>
-                  <p>{asset.description || 'Sin descripción disponible'}</p>
-                  <div className="asset-meta">
-                    <div><strong>Tipo:</strong> {asset.type || 'Desconocido'}</div>
-                    <div><strong>Subido:</strong> {asset.uploadDate ? new Date(asset.uploadDate).toLocaleDateString() : 'Desconocido'}</div>
-                  </div>
+                  <p>{asset.description}</p>
                 </div>
               )}
 
               {activeTab === 'files' && (
                 <div className="files-content">
-                  <h3>Archivos incluidos</h3>
+                  <h3>Archivos contenidos</h3>
                   <ul className="file-list">
-                    {asset.files.length > 0 ? (
-                      asset.files.map((file, index) => (
-                        <li key={index}>
-                          <div className="file-info">
-                            <span className="file-name">{file.name}</span>
-                            <span className="file-size">{file.size}</span>
-                          </div>
+                    {fileList.length > 0 ? (
+                      fileList.map((f, idx) => (
+                        <li key={idx}>
+                          <a href={f.url} download>
+                            {f.name}
+                          </a>
                         </li>
                       ))
                     ) : (
                       <li>No hay archivos disponibles</li>
                     )}
                   </ul>
-                  <div className="total-size">
-                    <strong>Total:</strong> {asset.storage || '0 Bytes'}
-                  </div>
                 </div>
               )}
 
               {activeTab === 'versions' && (
                 <div className="versions-content">
-                  <h3>Historial de versiones</h3>
+                  <h3>Versiones</h3>
                   <ul className="version-list">
                     <li>
-                      <strong>1.0</strong> - Asset lanzado ({asset.uploadDate ? new Date(asset.uploadDate).toLocaleDateString() : 'Desconocido'})
+                      <strong>1.0</strong> —{' '}
+                      {new Date(asset.uploadDate).toLocaleDateString()}
                     </li>
                   </ul>
                 </div>
@@ -285,20 +282,34 @@ function AssetView() {
 
               {activeTab === 'comments' && (
                 <div className="comments-content">
-                  <h3>Comentarios ({asset.comments.length})</h3>
+                  <h3>Comentarios ({comments.length})</h3>
+                  <form
+                    className="comment-form"
+                    onSubmit={handleSubmitComment}
+                  >
+                    <textarea
+                      value={newComment}
+                      onChange={e => setNewComment(e.target.value)}
+                      placeholder="Escribe un comentario..."
+                      required
+                    />
+                    <button type="submit">Enviar</button>
+                  </form>
                   <div className="comment-list">
-                    {asset.comments.map((comment, index) => (
-                      <div key={index} className="comment">
-                        <div className="comment-header">
-                          <span className="comment-user">{comment.user}</span>
-                          <span className="comment-date">{comment.date}</span>
-                          {comment.positive ? (
-                            <FiThumbsUp className="thumb-up" />
-                          ) : (
-                            <FiThumbsDown className="thumb-down" />
-                          )}
+                    {comments.map(c => (
+                      <div key={c._id} className="comment">
+                        <img
+                          src={c.user.avatar}
+                          alt={c.user.name}
+                          className="avatar-sm"
+                        />
+                        <div className="comment-body">
+                          <strong>{c.user.name}</strong>
+                          <p>{c.text}</p>
+                          <small>
+                            {new Date(c.createdAt).toLocaleDateString()}
+                          </small>
                         </div>
-                        <p className="comment-text">{comment.text}</p>
                       </div>
                     ))}
                   </div>
@@ -307,70 +318,43 @@ function AssetView() {
 
               {activeTab === 'author' && (
                 <div className="author-content">
-                  <h3>Información del Autor</h3>
-                  <div className="author-info">
-                    <img src={asset.author.avatar} alt={asset.author.name} className="author-avatar" />
-                    <div className="author-details">
-                      <h4>{asset.author.name}</h4>
-                      <p>Miembro desde {asset.author.joinDate}</p>
-                      <p>{asset.author.assetsCount} assets publicados</p>
-                      <p>Valoración: {asset.author.rating}/5</p>
-                    </div>
-                  </div>
+                  <h3>Autor</h3>
+                  <img
+                    src={asset.user.avatar}
+                    alt={asset.user.name}
+                    className="author-avatar"
+                  />
+                  <p>{asset.user.name}</p>
+                  <p>Miembro desde {new Date(asset.user.joinDate).toLocaleDateString()}</p>
+                  <p>{asset.user.assetsCount} assets publicados</p>
+                  <p>Valoración: {asset.user.rating}/5</p>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* Columna derecha */}
+        {/* Right column: title, like, download */}
         <div className="asset-right">
-          <h1 className="asset-title">{asset.title || 'Sin título'}</h1>
-          
-          <div className="author-header">
-            <img src={asset.author.avatar} alt={asset.author.name} className="author-avatar-small" />
-            <span className="author-name">{asset.author.name}</span>
+          <h1 className="asset-title">{asset.title}</h1>
+
+          <div className="likes-section">
+            <button
+              className={`btn-like ${liked ? 'liked' : ''}`}
+              onClick={handleToggleLike}
+            >
+              <FiThumbsUp size={20} /> {likesCount}
+            </button>
           </div>
 
-          <div className="asset-stats">
-            <div className="stat-item">
-              <span className="stat-label">Almacenamiento total</span>
-              <span className="stat-value">{asset.storage || '0 Bytes'}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Última versión</span>
-              <span className="stat-value">1.0</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Actualizado desde</span>
-              <span className="stat-value">{asset.lastUpdated ? new Date(asset.lastUpdated).toLocaleDateString() : 'Desconocido'}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Comentarios</span>
-              <div className="comment-stats">
-                {asset.ratings.positive > asset.ratings.negative ? (
-                  <>
-                    <FiThumbsUp className="thumb-up" />
-                    <span>{asset.ratings.positive} positivos</span>
-                  </>
-                ) : (
-                  <>
-                    <FiThumbsDown className="thumb-down" />
-                    <span>{asset.ratings.negative} negativos</span>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <button className="download-button" onClick={handleDownload} disabled={isLoading}>
-            <FiDownload className="download-icon" />
-            Descargar todo
+          <button
+            className="download-button"
+            onClick={handleDownload}
+          >
+            <FiDownload size={20} /> Descargar todo
           </button>
         </div>
       </div>
     </div>
-  );
+  )
 }
-
-export default AssetView;
