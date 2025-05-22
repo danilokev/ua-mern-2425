@@ -5,7 +5,7 @@ module.exports = function(app) {
   app.use(
     '/api',                           // todas las rutas que empiecen por /api
     createProxyMiddleware({
-      target: 'https://ua-mern-2425.onrender.com',
+      target: 'http://localhost:5000',
       changeOrigin: true,
       // pathRewrite: { '^/api': '/api' }, // opcional si quieres reescrituras
     })
