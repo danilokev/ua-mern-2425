@@ -36,7 +36,17 @@ const assetSchema = mongoose.Schema({
   },
   files: [{      // All files
     type: String
-  }]
+  }],
+comments: [{
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  text: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+}],
+likes: [{                        // lista de usuarios que han dado “like”
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'User'
+}]
+
 }, {
   timestamps: true
 })
