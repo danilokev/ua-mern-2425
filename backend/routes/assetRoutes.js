@@ -8,6 +8,7 @@ const {
   getAssets,
   getAssetById,
   getLatestPublicAssets,
+  getAssetsByTag,    // tu controlador de /search
   addComment,
   getComments,
   toggleLike
@@ -15,29 +16,16 @@ const {
 
 const upload = multer({ storage: multer.memoryStorage() })
 
-// --------------------------------------------------
-// Rutas públicas
-// --------------------------------------------------
-
-// GET  /api/assets/latest
-// Obtiene los últimos 20 assets subidos por cualquier usuario
+// 1) Rutas públicas SIN protect:
+// Últimos 20
 router.get('/latest', getLatestPublicAssets)
+// Búsqueda por categoría/tag
+router.get('/search', getAssetsByTag)
 
-// GET  /api/assets/:id
-// Detalle de un asset por ID (si quieres que sea público, quita `protect`)
-router.get('/:id', getAssetById)
-
-
-// --------------------------------------------------
-// Rutas protegidas (requieren token)
-// --------------------------------------------------
-
-// GET  /api/assets/
-// Lista todos los assets del usuario logueado
+// 2) Rutas protegidas CON protect:
+// Listar sólo mis assets
 router.get('/', protect, getAssets)
-
-// POST /api/assets/
-// Sube un nuevo asset (archivos + imágenes)
+// Subir nuevo asset
 router.post(
   '/',
   protect,
@@ -47,18 +35,11 @@ router.post(
   ]),
   createAsset
 )
-
-// POST /api/assets/:id/comments
-// Añade un comentario al asset
+// Detalle de un asset por ID
+router.get('/:id', protect, getAssetById)
+// Comentarios y likes
 router.post('/:id/comments', protect, addComment)
-
-// GET  /api/assets/:id/comments
-// Lista todos los comentarios de un asset
 router.get('/:id/comments', protect, getComments)
-
-// POST /api/assets/:id/likes
-// Da o quita “like” en un asset
-router.post('/:id/likes', protect, toggleLike)
-
+router.post('/:id/likes',   protect, toggleLike)
 
 module.exports = router

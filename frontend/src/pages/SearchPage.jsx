@@ -1,3 +1,4 @@
+// frontend/src/pages/SearchPage.jsx
 import { useState, useEffect, useMemo } from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import '../styles/index.css'
@@ -7,10 +8,10 @@ function useQuery() {
   return new URLSearchParams(useLocation().search)
 }
 
-function SearchPage() {
+export default function SearchPage() {
   const query = useQuery()
   const keyword = query.get('q')?.toLowerCase() || ''
-  const tag = query.get('tag')?.toUpperCase() || ''
+  const tag = query.get('tag') || ''
 
   const [assets, setAssets] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -18,66 +19,82 @@ function SearchPage() {
   useEffect(() => {
     const fetchAssets = async () => {
       try {
-        const response = await fetch('/api/assets')
-        const data = await response.json()
+        // Si hay tag, usamos la ruta pública para filtrar por tipo
+        const endpoint = tag
+          ? `/api/assets/search?tag=${encodeURIComponent(tag)}`
+          : '/api/assets/latest'
 
-        if (response.ok) {
-          const validAssets = data
-            .filter(asset => asset._id)
-            .map(asset => ({
-              id: asset._id,
-              title: asset.title || 'Sin título',
-              type: asset.type || 'Desconocido',
-              description: asset.description || 'Sin descripción',
-              images: asset.images && asset.images.length > 0
-                ? asset.images.map(img => ({ url: img }))
-                : (asset.image ? [{ url: asset.image }] : []),
-              files: asset.files && asset.files.length > 0
-                ? asset.files.map(f => ({ url: f, name: f.split('/').pop() }))
-                : (asset.file ? [{ url: asset.file, name: asset.file.split('/').pop() }] : []),
-              uploadDate: asset.uploadDate,
-              author: {
-                name: asset.user?.name || 'Desconocido',
-                avatar: asset.user?.avatar || 'https://via.placeholder.com/50',
-                joinDate: asset.user?.joinDate || 'Desconocido',
-                assetsCount: asset.user?.assetsCount || 0,
-                rating: asset.user?.rating || 0,
-              }
-            }))
-          setAssets(validAssets)
-        } else {
-          toast.error(data.message || 'Error al cargar los assets')
+        const res = await fetch(endpoint)
+        const data = await res.json()
+
+        if (!res.ok) {
+          throw new Error(data.message || `Error ${res.status}`)
         }
+
+        const validAssets = data
+          .filter(a => a._id)
+          .map(a => {
+            // montar mini-gallery
+            const imgs = []
+            if (a.image) imgs.push({ url: a.image })
+            if (Array.isArray(a.images)) {
+              a.images.forEach(u => {
+                if (u !== a.image) imgs.push({ url: u })
+              })
+            }
+            // montar lista de ficheros
+            const files = []
+            if (a.file) files.push({ url: a.file, name: a.file.split('/').pop() })
+            if (Array.isArray(a.files)) {
+              a.files.forEach(u => {
+                if (u !== a.file) files.push({ url: u, name: u.split('/').pop() })
+              })
+            }
+
+            return {
+              id: a._id,
+              title: a.title || 'Sin título',
+              type: a.type || 'Desconocido',
+              description: a.description || 'Sin descripción',
+              images: imgs,
+              files,
+              uploadDate: a.uploadDate,
+              author: {
+                name: a.user?.name || 'Desconocido',
+                avatar: a.user?.avatar || 'https://via.placeholder.com/50',
+                joinDate: a.user?.joinDate || 'Desconocido',
+                assetsCount: a.user?.assetsCount || 0,
+                rating: a.user?.rating || 0
+              }
+            }
+          })
+
+        setAssets(validAssets)
       } catch (err) {
         console.error(err)
-        toast.error('Error al conectar con el servidor')
+        toast.error(err.message || 'Error al cargar assets')
       } finally {
         setIsLoading(false)
       }
     }
 
     fetchAssets()
-  }, [])
+  }, [tag])
 
   const filteredAssets = useMemo(() => {
     return assets.filter(asset => {
       const matchesKeyword =
-        keyword === '' ||
+        !keyword ||
         asset.title.toLowerCase().includes(keyword) ||
         asset.description.toLowerCase().includes(keyword)
-        const matchesTag =
-          tag === '' ||
-          asset.type.toUpperCase() === tag ||
-          asset.title.toLowerCase().includes(tag.toLowerCase()) ||
-          asset.description.toLowerCase().includes(tag.toLowerCase())
-      
-      return matchesKeyword && matchesTag
+      return matchesKeyword
     })
-  }, [assets, keyword, tag])
+  }, [assets, keyword])
 
-  return (    
+  return (
     <main className="dashboard">
       <h2>Resultados de búsqueda</h2>
+
       {isLoading ? (
         <p>Cargando...</p>
       ) : filteredAssets.length === 0 ? (
@@ -85,7 +102,11 @@ function SearchPage() {
       ) : (
         <div className="assets-grid">
           {filteredAssets.map(asset => (
-            <Link key={asset.id} to={`/asset/${asset.id}`} className="asset-card-link">
+            <Link
+              key={asset.id}
+              to={`/asset/${asset.id}`}
+              className="asset-card-link"
+            >
               <article className="asset-card">
                 <img
                   src={asset.images[0]?.url || 'https://via.placeholder.com/300'}
@@ -102,5 +123,3 @@ function SearchPage() {
     </main>
   )
 }
-
-export default SearchPage
