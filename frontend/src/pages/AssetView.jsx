@@ -5,6 +5,7 @@ import { FiDownload, FiChevronLeft, FiChevronRight, FiThumbsUp } from 'react-ico
 import { toast } from 'react-toastify'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, useGLTF, Environment } from '@react-three/drei'
+import placeholder3D from "../assets/addons-icon.png" 
 
 function ModelViewer({ url }) {
   const [error, setError] = useState(null)
@@ -330,8 +331,7 @@ export default function AssetView() {
                     />
                   ) : (
                     <div className="model-thumbnail-content">
-                      <div className="model-icon">3D</div>
-                      <span>{item.name.split('.')[0]}</span>
+                      <div className="model-icon"><img src={placeholder3D} alt="Icono 3D" /></div>
                     </div>
                   )}
                 </div>
@@ -437,7 +437,7 @@ export default function AssetView() {
                   <p>{asset.user.name}</p>
                   <p>Miembro desde {new Date(asset.user.joinDate).toLocaleDateString()}</p>
                   <p>{asset.user.assetsCount} assets publicados</p>
-                  <p>Valoración: {asset.user.rating}/5</p>
+                  <p>Valoración: {asset.user.rating}4.9 / 5</p>
                 </div>
               )}
             </div>
@@ -449,19 +449,35 @@ export default function AssetView() {
           
           <div className="asset-meta">
             <span className="asset-type">{asset.type}</span>
-            <span className="asset-date">
-              {new Date(asset.uploadDate).toLocaleDateString()}
-            </span>
           </div>
 
-          <div className="likes-section">
-            <button
-              className={`btn-like ${liked ? 'liked' : ''}`}
-              onClick={handleToggleLike}
-              aria-label={liked ? 'Quitar like' : 'Dar like'}
-            >
-              <FiThumbsUp size={20} /> {likesCount}
-            </button>
+          <div className="asset-stats">
+            <div className="stat-item">
+              <span className="stat-label">Almacenamiento</span>
+              <span className="stat-value">{asset.storage || '0 Bytes'}</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-label">Última versión</span>
+              <span className="stat-value">1.0</span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-label">Actualizado desde</span>
+              <span className="asset-date">
+                {new Date(asset.uploadDate).toLocaleDateString()}
+              </span>
+            </div>
+            <div className="stat-item">
+              <span className="stat-label">Valoraciones</span>
+              <div className="comment-stats">
+              <button
+                className={`btn-like ${liked ? 'liked' : ''}`}
+                onClick={handleToggleLike}
+                aria-label={liked ? 'Quitar like' : 'Dar like'}
+              >
+                <FiThumbsUp size={20} /> {likesCount}
+              </button>
+              </div>
+            </div>
           </div>
 
           <button
@@ -471,16 +487,6 @@ export default function AssetView() {
             <FiDownload size={20} /> Descargar todo
           </button>
 
-          {fileList.length > 0 && (
-            <div className="file-types">
-              <h4>Archivos incluidos:</h4>
-              <ul>
-                {[...new Set(fileList.map(f => f.type))].map((type, i) => (
-                  <li key={i}>{type.toUpperCase()}</li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
       </div>
     </div>
