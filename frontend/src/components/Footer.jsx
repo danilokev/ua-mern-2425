@@ -33,10 +33,10 @@ export default function Footer() {
         <div className="footer-col footer-col--logo">
           <img src={theme === 'dark' ? logo : logon} alt="MolamazoGames" className="footer-logo" />
           <div className="footer-social">
-            <a href="#"><FaTwitter /></a>
-            <a href="#"><FaInstagram /></a>
-            <a href="#"><FaYoutube /></a>
-            <a href="#"><FaGithub /></a>
+            <a href="https://x.com/"><FaTwitter /></a>
+            <a href="https://www.instagram.com/"><FaInstagram /></a>
+            <a href="https://www.youtube.com/"><FaYoutube /></a>
+            <a href="https://github.com/danilokev"><FaGithub /></a>
           </div>
           <address className="footer-address">
             Carretera San Vicente del Raspeig s/n<br/>
