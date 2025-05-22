@@ -2,12 +2,23 @@ import { useState } from 'react';
 import { Sidebar, Menu, SubMenu, MenuItem } from 'react-pro-sidebar';
 import { FaHome, FaBox, FaUpload, FaSignOutAlt, FaHistory, FaUser, FaUserSlash, FaUniversalAccess, FaBars } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logout, reset } from '../features/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 function SidebarComponent() {
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(reset());
+    navigate('/');
   };
 
   return (
@@ -31,9 +42,6 @@ function SidebarComponent() {
             <MenuItem className='sidebar-menu__item' component={<Link to="/upload" />}>
               <FaUpload /> Subir Asset
             </MenuItem>
-            <MenuItem className='sidebar-menu__item' component={<Link to="#" />}>
-              <FaHistory /> Historial
-            </MenuItem>
             <SubMenu label="Configuración" className='sidebar-submenu'>
               <MenuItem className='sidebar-menu__item' component={<Link to="/delete-account" />}>
                 <FaUserSlash /> Darse de baja
@@ -42,7 +50,10 @@ function SidebarComponent() {
                 <FaUniversalAccess /> Accesibilidad
               </MenuItem>
             </SubMenu>
-            <MenuItem className='sidebar-menu__item'>
+            <MenuItem
+              className='sidebar-menu__item'
+              onClick={handleLogout}
+            >
               <FaSignOutAlt /> Cerrar Sesión
             </MenuItem>
           </Menu>

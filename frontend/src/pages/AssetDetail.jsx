@@ -96,8 +96,8 @@ export default function AssetDetail() {
   }
 
   if (loading) return <p>Cargando detalle…</p>
-  if (error)   return <p className="error">{error}</p>
-  if (!asset)  return <p>Asset no encontrado</p>
+  if (error) return <p className="error">{error}</p>
+  if (!asset) return <p>Asset no encontrado</p>
 
   return (
     <div className="asset-detail container">
@@ -155,44 +155,6 @@ export default function AssetDetail() {
       <div className="description">
         <h3>Descripción</h3>
         <p>{asset.description}</p>
-      </div>
-
-      <div className="likes-section">
-        <button
-          className={`btn-like ${liked ? 'liked' : ''}`}
-          onClick={handleToggleLike}
-        >
-          <FaThumbsUp /> {likesCount} {liked ? 'Ya no me gusta' : 'Me gusta'}
-        </button>
-      </div>
-
-      <div className="comments-section">
-        <h3>Comentarios ({comments.length})</h3>
-        <form onSubmit={handleSubmitComment} className="comment-form">
-          <textarea
-            value={newComment}
-            onChange={e => setNewComment(e.target.value)}
-            placeholder="Escribe un comentario…"
-            required
-          />
-          <button type="submit">Enviar</button>
-        </form>
-        <ul className="comment-list">
-          {comments.map(c => (
-            <li key={c._id} className="comment-item">
-              <img
-                src={c.user.avatar}
-                alt={c.user.name}
-                className="avatar-sm"
-              />
-              <div className="comment-body">
-                <strong>{c.user.name}</strong>
-                <p>{c.text}</p>
-                <small>{new Date(c.createdAt).toLocaleDateString()}</small>
-              </div>
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   )
