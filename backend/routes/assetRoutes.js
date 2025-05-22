@@ -1,3 +1,4 @@
+// backend/routes/assetRoutes.js
 const express = require('express')
 const router = express.Router()
 const multer = require('multer')
@@ -8,24 +9,26 @@ const {
   getAssets,
   getAssetById,
   getLatestPublicAssets,
-  getAssetsByTag,    // tu controlador de /search
+  getAssetsByTag,
   addComment,
   getComments,
-  toggleLike
+  toggleLike,
+  downloadAsset   // <-- asegurarse de importarlo
 } = require('../controllers/assetController')
 
 const upload = multer({ storage: multer.memoryStorage() })
 
-// 1) Rutas públicas SIN protect:
-// Últimos 20
+// 1) Rutas públicas (no requieren token)
+// GET  /api/assets/latest       → últimos 20 assets
 router.get('/latest', getLatestPublicAssets)
-// Búsqueda por categoría/tag
+// GET  /api/assets/search?tag=… → filtrar por categoría/tag
 router.get('/search', getAssetsByTag)
 
-// 2) Rutas protegidas CON protect:
-// Listar sólo mis assets
+
+// 2) Rutas protegidas (requieren token)
+// GET    /api/assets/            → mis assets
 router.get('/', protect, getAssets)
-// Subir nuevo asset
+// POST   /api/assets/            → subir un nuevo asset
 router.post(
   '/',
   protect,
@@ -35,11 +38,16 @@ router.post(
   ]),
   createAsset
 )
-// Detalle de un asset por ID
+// GET    /api/assets/:id/download → descargar todos los ficheros en un ZIP
+router.get('/:id/download', protect, downloadAsset)
+// GET    /api/assets/:id         → detalle de un asset
 router.get('/:id', protect, getAssetById)
-// Comentarios y likes
+// POST   /api/assets/:id/comments → añadir comentario
 router.post('/:id/comments', protect, addComment)
+// GET    /api/assets/:id/comments → listar comentarios
 router.get('/:id/comments', protect, getComments)
-router.post('/:id/likes',   protect, toggleLike)
+// POST   /api/assets/:id/likes    → toggle like/unlike
+router.post('/:id/likes', protect, toggleLike)
+
 
 module.exports = router
