@@ -1,8 +1,11 @@
 // backend/controllers/assetController.js
 'use strict'
 
-const Asset = require('../models/assetModel')
-const User = require('../models/userModel')
+const Asset    = require('../models/assetModel')
+const User     = require('../models/userModel')
+const axios    = require('axios')
+const archiver = require('archiver')
+const path     = require('path')
 const { uploadToCloudify } = require('./cloudifyService')
 
 // 1) Crea un nuevo asset
@@ -38,12 +41,12 @@ const createAsset = async (req, res) => {
       title: req.body.title,
       type: req.body.type,
       description: req.body.description,
-      file: fileUrls[0] || '',
-      files: fileUrls,
-      image: imageUrls[0] || '',
+      file:   fileUrls[0] || '',
+      files:  fileUrls,
+      image:  imageUrls[0] || '',
       images: imageUrls,
       comments: [],
-      likes: []
+      likes:    []
     }
 
     const asset = await Asset.create(assetData)
@@ -63,6 +66,7 @@ const getAssets = async (req, res) => {
     const assets = await Asset.find({ user: req.user.id })
       .populate('user', 'name avatar joinDate assetsCount rating')
       .sort({ uploadDate: -1 })
+
     res.status(200).json(assets)
   } catch (error) {
     console.error('Error fetching assets:', error)
@@ -76,7 +80,11 @@ const getAssetById = async (req, res) => {
     const asset = await Asset.findById(req.params.id)
       .populate('user', 'name avatar joinDate assetsCount rating')
       .populate('comments.user', 'name avatar')
-    if (!asset) return res.status(404).json({ message: 'Asset no encontrado' })
+
+    if (!asset) {
+      return res.status(404).json({ message: 'Asset no encontrado' })
+    }
+
     res.status(200).json(asset)
   } catch (error) {
     console.error('Error fetching asset by id:', error)
@@ -91,6 +99,7 @@ const getLatestPublicAssets = async (req, res) => {
       .sort({ uploadDate: -1 })
       .limit(20)
       .populate('user', 'name avatar joinDate assetsCount rating')
+
     res.status(200).json(assets)
   } catch (error) {
     console.error('Error fetching latest public assets:', error)
@@ -98,15 +107,15 @@ const getLatestPublicAssets = async (req, res) => {
   }
 }
 
-// 5) Búsqueda pública por tag (Opción B)
+// 5) Búsqueda pública por tag
 const getAssetsByTag = async (req, res) => {
   try {
     const { tag } = req.query
-    // Filtramos por el campo `type` igual al tag; ajusta si usas otro campo de etiquetas
     const filter = tag ? { type: tag } : {}
     const assets = await Asset.find(filter)
       .sort({ uploadDate: -1 })
       .populate('user', 'name avatar joinDate assetsCount rating')
+
     res.status(200).json(assets)
   } catch (error) {
     console.error('Error fetching assets by tag:', error)
@@ -119,13 +128,16 @@ const addComment = async (req, res) => {
   try {
     const asset = await Asset.findById(req.params.id)
     if (!asset) return res.status(404).json({ message: 'Asset no encontrado' })
+
     const { text } = req.body
     if (!text?.trim()) {
       return res.status(400).json({ message: 'El texto del comentario es obligatorio' })
     }
+
     asset.comments.push({ user: req.user.id, text: text.trim() })
     await asset.save()
     await asset.populate('comments.user', 'name avatar')
+
     res.status(201).json(asset.comments)
   } catch (error) {
     console.error('Error añadiendo comentario:', error)
@@ -138,7 +150,9 @@ const getComments = async (req, res) => {
   try {
     const asset = await Asset.findById(req.params.id)
       .populate('comments.user', 'name avatar')
+
     if (!asset) return res.status(404).json({ message: 'Asset no encontrado' })
+
     res.status(200).json(asset.comments)
   } catch (error) {
     console.error('Error obteniendo comentarios:', error)
@@ -151,11 +165,14 @@ const toggleLike = async (req, res) => {
   try {
     const asset = await Asset.findById(req.params.id)
     if (!asset) return res.status(404).json({ message: 'Asset no encontrado' })
+
     const userId = req.user.id
-    const idx = asset.likes.findIndex(id => id.toString() === userId)
-    const liked = idx === -1
+    const idx    = asset.likes.findIndex(id => id.toString() === userId)
+    const liked  = idx === -1
+
     if (liked) asset.likes.push(userId)
     else       asset.likes.splice(idx, 1)
+
     await asset.save()
     res.status(200).json({ likesCount: asset.likes.length, liked })
   } catch (error) {
@@ -164,13 +181,54 @@ const toggleLike = async (req, res) => {
   }
 }
 
+// 9) Descargar todos los ficheros en un ZIP
+const downloadAsset = async (req, res) => {
+  try {
+    const asset = await Asset.findById(req.params.id)
+    if (!asset) {
+      return res.status(404).json({ message: 'Asset no encontrado' })
+    }
+
+    // Recopilar URLs de archivos
+    const urls = []
+    if (asset.file) urls.push(asset.file)
+    if (Array.isArray(asset.files)) urls.push(...asset.files)
+
+    if (urls.length === 0) {
+      return res.status(400).json({ message: 'No hay archivos para descargar' })
+    }
+
+    // Preparar la respuesta como ZIP
+    res.attachment(`${asset.title || 'asset'}.zip`)
+    const archive = archiver('zip', { zlib: { level: 9 } })
+    archive.on('error', err => {
+      console.error('Error creando ZIP:', err)
+      res.status(500).end()
+    })
+    archive.pipe(res)
+
+    // Añadir cada archivo remoto al ZIP
+    for (const fileUrl of urls) {
+      const filename = path.basename(fileUrl)
+      const response = await axios.get(fileUrl, { responseType: 'stream' })
+      archive.append(response.data, { name: filename })
+    }
+
+    await archive.finalize()
+  } catch (err) {
+    console.error('Error en downloadAsset:', err)
+    res.status(500).json({ message: err.message })
+  }
+}
+
 module.exports = {
   createAsset,
   getAssets,
   getAssetById,
   getLatestPublicAssets,
-  getAssetsByTag,   // <-- nueva función pública
+  getAssetsByTag,
   addComment,
   getComments,
-  toggleLike
+  toggleLike,
+  downloadAsset
 }
