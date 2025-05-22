@@ -18,7 +18,7 @@ const Profile = () => {
   });
   const [imagePreview, setImagePreview] = useState(
     user?.avatar
-      ? `http://localhost:5000${user.avatar}`
+      ? `https://ua-mern-2425.onrender.com${user.avatar}`
       : '/images/default-avatar.jpg'
   );
   const [localError, setLocalError] = useState('');
@@ -33,7 +33,7 @@ const Profile = () => {
       });
       setImagePreview(
         user.avatar
-          ? `http://localhost:5000${user.avatar}`
+          ? `https://ua-mern-2425.onrender.com${user.avatar}`
           : '/images/default-avatar.jpg'
       );
     }
@@ -106,7 +106,7 @@ const Profile = () => {
       setLocalError(error);
       setImagePreview(
         user?.avatar
-          ? `http://localhost:5000${user.avatar}`
+          ? `https://ua-mern-2425.onrender.com${user.avatar}`
           : '/images/default-avatar.jpg'
       );
     }
