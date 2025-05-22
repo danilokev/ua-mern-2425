@@ -1,30 +1,52 @@
-// frontend/src/pages/AssetView.jsx
 import '../styles/assetview.css'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import {
-  FiDownload,
-  FiChevronLeft,
-  FiChevronRight,
-  FiThumbsUp
-} from 'react-icons/fi'
+import { FiDownload, FiChevronLeft, FiChevronRight, FiThumbsUp } from 'react-icons/fi'
 import { toast } from 'react-toastify'
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, useGLTF, Environment } from '@react-three/drei'
+
+function ModelViewer({ url }) {
+  const [error, setError] = useState(null)
+  const { scene } = useGLTF(url, true, (err) => {
+    console.error('Error loading GLB model:', err)
+    setError('No se pudo cargar el modelo 3D')
+  })
+
+  const clonedScene = useMemo(() => {
+    if (!scene) return null
+    return scene.clone()
+  }, [scene])
+
+  if (error) {
+    return (
+      <div className="error">
+        <p>{error}</p>
+        <p>URL del modelo: {url}</p>
+      </div>
+    )
+  }
+
+  if (!clonedScene) return <div className="loading">Cargando modelo...</div>
+
+  return (
+    <primitive 
+      object={clonedScene} 
+      scale={[1, 1, 1]}
+      position={[0, 0, 0]}
+    />
+  )
+}
 
 export default function AssetView() {
   const { id } = useParams()
   const [asset, setAsset] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
-
-  // Gallery & files
-  const [gallery, setGallery] = useState([])    // [{ url, name }]
-  const [fileList, setFileList] = useState([])  // [{ url, name }]
-
-  // UI state
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [gallery, setGallery] = useState([])
+  const [fileList, setFileList] = useState([])
+  const [currentItemIndex, setCurrentItemIndex] = useState(0)
   const [activeTab, setActiveTab] = useState('info')
-
-  // Comments & likes
   const [comments, setComments] = useState([])
   const [newComment, setNewComment] = useState('')
   const [likesCount, setLikesCount] = useState(0)
@@ -42,53 +64,89 @@ export default function AssetView() {
             'Authorization': `Bearer ${token}`
           }
         })
+        
         if (!res.ok) {
           const err = await res.json()
           throw new Error(err.message || res.status)
         }
+        
         const data = await res.json()
-
+        
         // Build gallery array
-        const images = []
+        const galleryItems = []
         if (data.image) {
-          images.push({
+          galleryItems.push({
             url: data.image,
-            name: data.image.split('/').pop()
+            name: data.image.split('/').pop(),
+            type: 'image'
           })
         }
+        
         if (Array.isArray(data.images)) {
           data.images.forEach(u => {
             if (u !== data.image) {
-              images.push({ url: u, name: u.split('/').pop() })
+              galleryItems.push({ 
+                url: u, 
+                name: u.split('/').pop(), 
+                type: 'image' 
+              })
             }
           })
         }
+        
+        // Check both 'models' and GLB files in 'files'
+        const modelUrls = []
+        if (Array.isArray(data.models)) {
+          modelUrls.push(...data.models)
+        }
+        
+        if (Array.isArray(data.files)) {
+          data.files.forEach(file => {
+            if (file.toLowerCase().endsWith('.glb') || file.toLowerCase().endsWith('.gltf')) {
+              modelUrls.push(file)
+            }
+          })
+        }
+        
+        modelUrls.forEach(u => {
+          galleryItems.push({ 
+            url: u, 
+            name: u.split('/').pop(), 
+            type: 'model',
+            fileType: u.split('.').pop().toLowerCase()
+          })
+        })
 
-        // Build file list array
+        // Build file list
         const files = []
         if (data.file) {
           files.push({
             url: data.file,
-            name: data.file.split('/').pop()
+            name: data.file.split('/').pop(),
+            type: data.file.split('.').pop().toLowerCase()
           })
         }
+        
         if (Array.isArray(data.files)) {
           data.files.forEach(u => {
             if (u !== data.file) {
-              files.push({ url: u, name: u.split('/').pop() })
+              files.push({ 
+                url: u, 
+                name: u.split('/').pop(),
+                type: u.split('.').pop().toLowerCase()
+              })
             }
           })
         }
 
-        // Set all state
         setAsset(data)
-        setGallery(images)
+        setGallery(galleryItems)
         setFileList(files)
         setComments(data.comments || [])
         setLikesCount(data.likes?.length || 0)
         setLiked(data.likes?.includes(localStorage.getItem('userId')))
       } catch (err) {
-        console.error(err)
+        console.error('Fetch error:', err)
         setError(err.message)
         toast.error('Error cargando asset: ' + err.message)
       } finally {
@@ -99,19 +157,16 @@ export default function AssetView() {
     fetchAsset()
   }, [id])
 
-  // Gallery nav
-  const nextImage = () =>
-    setCurrentImageIndex(i =>
+  const nextItem = () =>
+    setCurrentItemIndex(i =>
       gallery.length > 0 ? (i + 1) % gallery.length : 0
     )
-  const prevImage = () =>
-    setCurrentImageIndex(i =>
-      gallery.length > 0
-        ? (i - 1 + gallery.length) % gallery.length
-        : 0
+  
+  const prevItem = () =>
+    setCurrentItemIndex(i =>
+      gallery.length > 0 ? (i - 1 + gallery.length) % gallery.length : 0
     )
 
-  // Submit a new comment
   const handleSubmitComment = async e => {
     e.preventDefault()
     if (!newComment.trim()) return
@@ -126,7 +181,9 @@ export default function AssetView() {
         },
         body: JSON.stringify({ text: newComment.trim() })
       })
+      
       if (!res.ok) throw new Error('No se pudo publicar el comentario')
+      
       const updated = await res.json()
       setComments(updated)
       setNewComment('')
@@ -137,7 +194,6 @@ export default function AssetView() {
     }
   }
 
-  // Toggle like/unlike
   const handleToggleLike = async () => {
     try {
       const token = localStorage.getItem('token')
@@ -148,7 +204,9 @@ export default function AssetView() {
           'Authorization': `Bearer ${token}`
         }
       })
+      
       if (!res.ok) throw new Error('No se pudo procesar like')
+      
       const { likesCount: count, liked: nowLiked } = await res.json()
       setLikesCount(count)
       setLiked(nowLiked)
@@ -158,7 +216,6 @@ export default function AssetView() {
     }
   }
 
-  // Download all files
   const handleDownload = async () => {
     try {
       const token = localStorage.getItem('token')
@@ -167,7 +224,9 @@ export default function AssetView() {
           Authorization: `Bearer ${token}`
         }
       })
+      
       if (!res.ok) throw new Error('Falló descarga')
+      
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -183,47 +242,99 @@ export default function AssetView() {
     }
   }
 
-  if (isLoading) return <p>Cargando detalle…</p>
-  if (error) return <p className="error">{error}</p>
-  if (!asset) return <p>Asset no encontrado</p>
+  if (isLoading) return <div className="loading-full">Cargando detalle del asset...</div>
+  if (error) return <div className="error-full">{error}</div>
+  if (!asset) return <div className="error-full">Asset no encontrado</div>
+
+  const currentItem = gallery[currentItemIndex]
 
   return (
     <div className="asset-view container">
       <div className="asset-layout">
-        {/* Left column: gallery + tabs */}
         <div className="asset-left">
           <div className="image-gallery">
             <button
               className="nav-button left"
-              onClick={prevImage}
+              onClick={prevItem}
               disabled={gallery.length <= 1}
+              aria-label="Anterior"
             >
               <FiChevronLeft size={24} />
             </button>
-            <img
-              className="main-image"
-              src={gallery[currentImageIndex]?.url}
-              alt={gallery[currentImageIndex]?.name}
-            />
+            
+            <div className="media-container">
+              {currentItem?.type === 'image' ? (
+                <img
+                  className="main-image"
+                  src={currentItem?.url}
+                  alt={currentItem?.name}
+                  loading="lazy"
+                />
+              ) : (
+                <div className="model-viewer">
+                  <Suspense fallback={
+                    <div className="loading-model">
+                      <p>Cargando modelo 3D...</p>
+                      <p>{currentItem?.name}</p>
+                    </div>
+                  }>
+                    <Canvas
+                      style={{ height: '500px', width: '100%', background: '#f0f0f0' }}
+                      camera={{ position: [0, 0, 5], fov: 50 }}
+                    >
+                      <ambientLight intensity={0.8} />
+                      <directionalLight position={[10, 10, 5]} intensity={1} />
+                      <Environment preset="city" />
+                      <ModelViewer url={currentItem?.url} />
+                      <OrbitControls 
+                        enablePan={true}
+                        enableZoom={true}
+                        enableRotate={true}
+                        minPolarAngle={0}
+                        maxPolarAngle={Math.PI}
+                      />
+                    </Canvas>
+                  </Suspense>
+                  <div className="model-info">
+                    <p>Modelo: {currentItem?.name}</p>
+                    <p>Formato: {currentItem?.fileType}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <button
               className="nav-button right"
-              onClick={nextImage}
+              onClick={nextItem}
               disabled={gallery.length <= 1}
+              aria-label="Siguiente"
             >
               <FiChevronRight size={24} />
             </button>
 
             <div className="thumbnail-container">
-              {gallery.map((img, idx) => (
-                <img
+              {gallery.map((item, idx) => (
+                <div
                   key={idx}
                   className={`thumbnail ${
-                    idx === currentImageIndex ? 'active' : ''
-                  }`}
-                  src={img.url}
-                  alt={img.name}
-                  onClick={() => setCurrentImageIndex(idx)}
-                />
+                    idx === currentItemIndex ? 'active' : ''
+                  } ${item.type === 'model' ? 'model-thumbnail' : ''}`}
+                  onClick={() => setCurrentItemIndex(idx)}
+                  title={item.name}
+                >
+                  {item.type === 'image' ? (
+                    <img
+                      src={item.url}
+                      alt={item.name}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="model-thumbnail-content">
+                      <div className="model-icon">3D</div>
+                      <span>{item.name.split('.')[0]}</span>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>
@@ -246,6 +357,8 @@ export default function AssetView() {
                 <div className="info-content">
                   <h3>Descripción</h3>
                   <p>{asset.description}</p>
+                  <h3>Tipo</h3>
+                  <p>{asset.type}</p>
                 </div>
               )}
 
@@ -257,7 +370,7 @@ export default function AssetView() {
                       fileList.map((f, idx) => (
                         <li key={idx}>
                           <a href={f.url} download>
-                            {f.name}
+                            {f.name} <span className="file-type">({f.type})</span>
                           </a>
                         </li>
                       ))
@@ -283,10 +396,7 @@ export default function AssetView() {
               {activeTab === 'comments' && (
                 <div className="comments-content">
                   <h3>Comentarios ({comments.length})</h3>
-                  <form
-                    className="comment-form"
-                    onSubmit={handleSubmitComment}
-                  >
+                  <form className="comment-form" onSubmit={handleSubmitComment}>
                     <textarea
                       value={newComment}
                       onChange={e => setNewComment(e.target.value)}
@@ -334,14 +444,21 @@ export default function AssetView() {
           </div>
         </div>
 
-        {/* Right column: title, like, download */}
         <div className="asset-right">
           <h1 className="asset-title">{asset.title}</h1>
+          
+          <div className="asset-meta">
+            <span className="asset-type">{asset.type}</span>
+            <span className="asset-date">
+              {new Date(asset.uploadDate).toLocaleDateString()}
+            </span>
+          </div>
 
           <div className="likes-section">
             <button
               className={`btn-like ${liked ? 'liked' : ''}`}
               onClick={handleToggleLike}
+              aria-label={liked ? 'Quitar like' : 'Dar like'}
             >
               <FiThumbsUp size={20} /> {likesCount}
             </button>
@@ -353,6 +470,17 @@ export default function AssetView() {
           >
             <FiDownload size={20} /> Descargar todo
           </button>
+
+          {fileList.length > 0 && (
+            <div className="file-types">
+              <h4>Archivos incluidos:</h4>
+              <ul>
+                {[...new Set(fileList.map(f => f.type))].map((type, i) => (
+                  <li key={i}>{type.toUpperCase()}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </div>
