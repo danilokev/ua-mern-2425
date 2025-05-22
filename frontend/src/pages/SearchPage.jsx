@@ -84,9 +84,11 @@ export default function SearchPage() {
   const filteredAssets = useMemo(() => {
     return assets.filter(asset => {
       const matchesKeyword =
-        !keyword ||
-        asset.title.toLowerCase().includes(keyword) ||
-        asset.description.toLowerCase().includes(keyword)
+      !keyword ||
+      asset.title.toLowerCase().includes(keyword) ||
+      asset.description.toLowerCase().includes(keyword) ||
+      asset.author.name.toLowerCase().includes(keyword)
+
       return matchesKeyword
     })
   }, [assets, keyword])
