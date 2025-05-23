@@ -196,24 +196,22 @@ function AssetUpload() {
               />
             </div>
             <div className="form-group">
-              <label className='txt-form-asset'>Elige el tipo de categoría:</label>
+              <label className="txt-form-asset">Elige el tipo de categoría:</label>
               <select name="type" value={type} onChange={onChange}>
-              <option value="2D">2D</option>
-              <option value="3D">3D</option>
-              <option value="Add-Ons">Add-Ons</option>
-              <option value="Pixel Art">Pixel Art</option>
-              <option value="Isométrico">Isométrico</option>
-              <option value="UI">UI</option>
-              <option value="Iconos">Iconos</option>
-              <option value="Audio">Audio</option>
-              <option value="Música">Música</option>
-              <option value="VFX">VFX</option>
-              <option value="Animaciones">Animaciones</option>
-              <option value="Fondos">Fondos</option>
-              <option value="Tilesets">Tilesets</option>
-              <option value="Video">Video</option>
-              <option value="Código">Código</option>
-              <option value="Otros">Otros</option>
+                <option value="2D">2D</option>
+                <option value="3D">3D</option>
+                <option value="Pixel Art">Pixel Art</option>
+                <option value="Isométrico">Isométrico</option>
+                <option value="UI">UI</option>
+                <option value="Iconos">Iconos</option>
+                <option value="Audio">Audio</option>
+                <option value="Música">Música</option>
+                <option value="VFX">VFX</option>
+                <option value="Animaciones">Animaciones</option>
+                <option value="Fondos">Fondos</option>
+                <option value="Tilesets">Tilesets</option>
+                <option value="Add-Ons">Add-Ons</option>
+                <option value="Otros">Otros</option>
               </select>
             </div>
             <div className="form-group">

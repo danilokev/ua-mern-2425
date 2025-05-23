@@ -14,7 +14,22 @@ const assetSchema = mongoose.Schema({
   type: {
     type: String,
     required: [true, 'Por favor especifica el tipo de asset'],
-    enum: ['2D', '3D', 'Audio', 'Video', 'Código', 'Otros']
+    enum: [
+      '2D',
+      '3D',
+      'Pixel Art',
+      'Isométrico',
+      'UI',
+      'Iconos',
+      'Audio',
+      'Música',
+      'VFX',
+      'Animaciones',
+      'Fondos',
+      'Tilesets',
+      'Add-Ons',
+      'Otros'
+    ]
   },
   uploadDate: {
     type: Date,
