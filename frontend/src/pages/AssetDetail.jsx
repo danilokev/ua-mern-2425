@@ -210,8 +210,9 @@ export default function AssetDetail() {
       formData.append('title', editForm.title);
       formData.append('type', editForm.type);
       formData.append('description', editForm.description);
-      formData.append('removeImages', JSON.stringify(editForm.removeImages));
-      formData.append('removeFiles', JSON.stringify(editForm.removeFiles));
+      // Append each URL as a separate entry to form arrays
+      editForm.removeImages.forEach((url) => formData.append('removeImages[]', url));
+      editForm.removeFiles.forEach((url) => formData.append('removeFiles[]', url));
       editForm.newImages.forEach((file) => formData.append('images', file.fileObject));
       editForm.newFiles.forEach((file) => formData.append('files', file.fileObject));
 
