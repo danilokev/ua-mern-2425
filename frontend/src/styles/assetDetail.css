@@ -67,8 +67,6 @@
   margin-bottom: .5rem;
 }
 
-
-
 /* A partir de aquí es para editar asset */
 .asset-detail.container {
   max-width: 800px;
@@ -149,6 +147,11 @@
 
 .file-list li {
   margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
 }
 
 .file-list a {
@@ -220,6 +223,40 @@
   background: #c82333;
 }
 
+/* Override remove-btn for file-list to match assetupload.css */
+.file-list .remove-btn {
+  position: static; /* Remove absolute positioning */
+  background: none;
+  color: #ff4444;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-list .remove-btn:hover {
+  color: #cc0000;
+}
+
+.file-list .remove-btn:disabled {
+  color: #999;
+  cursor: not-allowed;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.file-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .file-item {
   display: flex;
   justify-content: space-between;
@@ -255,4 +292,23 @@
 
 .cancel-btn:hover {
   background: #5a6268;
+}
+
+.btn.btn-outline {
+  border: 1px solid #4CAF50;
+  background: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn.btn-outline:hover {
+  background: #f0f0f0;
+}
+
+.btn-icon {
+  margin-right: 4px;
 }

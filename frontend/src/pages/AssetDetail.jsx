@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { FiArrowLeft, FiFile, FiImage, FiX, FiUpload } from 'react-icons/fi';
 import '../styles/assetDetail.css';
+import '../styles/assetupload.css';
 
 export default function AssetDetail() {
   const { id } = useParams();
@@ -73,7 +74,6 @@ export default function AssetDetail() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  // Configuración de dropzone para archivos
   const {
     getRootProps: getFileRootProps,
     getInputProps: getFileInputProps,
@@ -102,7 +102,6 @@ export default function AssetDetail() {
     maxFiles: 10,
   });
 
-  // Configuración de dropzone para imágenes
   const {
     getRootProps: getImageRootProps,
     getInputProps: getImageInputProps,
@@ -181,10 +180,17 @@ export default function AssetDetail() {
     setEditForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleRemoveItem = (url, field) => {
-    setEditForm((prev) => ({
+  const handleRemoveItem = (item, field, type) => {
+    setEditForm((prev) => {
+      const removeField = type === 'image' ? 'removeImages' : 'removeFiles';
+      return {
+        ...prev,
+        [removeField]: [...prev[removeField], item],
+      };
+    });
+    setAsset((prev) => ({
       ...prev,
-      [field]: [...prev[field], url],
+      [field]: prev[field].filter((f) => f !== item),
     }));
   };
 
@@ -277,7 +283,7 @@ export default function AssetDetail() {
                 <FiImage /> Todas las imágenes
                 <div className="media-list">
                   {asset.images.map((url, i) => (
-                    <img key={i} src={url} altProviders={`${asset.title}-${i}`} />
+                    <img key={i} src={url} alt={`${asset.title}-${i}`} />
                   ))}
                 </div>
               </div>
@@ -349,20 +355,25 @@ export default function AssetDetail() {
           </div>
           <div className="form-group">
             <label>Imágenes actuales</label>
-            <div className="media-list">
-              {asset.images.map((url, i) => (
-                <div key={i} className="media-item editable">
-                  <img src={url} alt={`${asset.title}-${i}`} />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveItem(url, 'removeImages')}
-                    className="remove-btn"
-                  >
-                    <FiX /> Eliminar
-                  </button>
-                </div>
-              ))}
-            </div>
+            {asset.images.length > 0 ? (
+              <div className="media-list">
+                {asset.images.map((url, i) => (
+                  <div key={i} className="media-item editable">
+                    <img src={url} alt={`${asset.title}-${i}`} />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveItem(url, 'images', 'image')}
+                      className="remove-btn"
+                      disabled={editForm.removeImages.includes(url)}
+                    >
+                      <FiX />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No hay imágenes actuales</p>
+            )}
             <label>Añadir nuevas imágenes</label>
             <div
               {...getImageRootProps()}
@@ -415,20 +426,30 @@ export default function AssetDetail() {
           </div>
           <div className="form-group">
             <label>Archivos actuales</label>
-            <ul className="file-list">
-              {asset.files.map((f, i) => (
-                <li key={i} className="file-item">
-                  <span>{f.split('/').pop()}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveItem(f, 'removeFiles')}
-                    className="remove-btn"
-                  >
-                    <FiX /> Eliminar
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <div className="file-list">
+              {asset.files.length > 0 ? (
+                <ul>
+                  {asset.files.map((f, i) => (
+                    <li key={i}>
+                      <div className="file-info">
+                        <FiFile className="file-icon" />
+                        <span className="file-name">{f.split('/').pop()}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveItem(f, 'files', 'file')}
+                        className="remove-btn"
+                        disabled={editForm.removeFiles.includes(f)}
+                      >
+                        <FiX />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No hay archivos actuales</p>
+              )}
+            </div>
             <label>Añadir nuevos archivos</label>
             <div
               {...getFileRootProps()}
