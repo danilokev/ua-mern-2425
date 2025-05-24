@@ -1,19 +1,20 @@
-import { useState, useEffect } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
-import { FaArrowLeft, FaFile, FaImage, FaThumbsUp, FaEdit, FaSave, FaTrash } from 'react-icons/fa'
-import '../styles/assetDetail.css'
+import { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useDropzone } from 'react-dropzone';
+import { FiArrowLeft, FiFile, FiImage, FiX, FiUpload } from 'react-icons/fi';
+import '../styles/assetDetail.css';
 
 export default function AssetDetail() {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const [asset, setAsset] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [comments, setComments] = useState([])
-  const [newComment, setNewComment] = useState('')
-  const [likesCount, setLikesCount] = useState(0)
-  const [liked, setLiked] = useState(false)
-  const [editMode, setEditMode] = useState(false)
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [asset, setAsset] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
+  const [likesCount, setLikesCount] = useState(0);
+  const [liked, setLiked] = useState(false);
+  const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState({
     title: '',
     type: '',
@@ -21,29 +22,29 @@ export default function AssetDetail() {
     removeImages: [],
     removeFiles: [],
     newImages: [],
-    newFiles: []
-  })
+    newFiles: [],
+  });
 
   useEffect(() => {
     const fetchAsset = async () => {
       try {
-        const token = localStorage.getItem('token')
-        if (!token) throw new Error('No estás autenticado')
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('No estás autenticado');
 
         const res = await fetch(`/api/assets/${id}`, {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        })
-        if (!res.ok) throw new Error(`Error ${res.status}`)
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error(`Error ${res.status}`);
 
-        const data = await res.json()
-        setAsset(data)
-        setComments(data.comments || [])
-        setLikesCount(data.likes ? data.likes.length : 0)
-        const meId = localStorage.getItem('userId')
-        setLiked(data.likes?.some(uid => uid === meId))
+        const data = await res.json();
+        setAsset(data);
+        setComments(data.comments || []);
+        setLikesCount(data.likes ? data.likes.length : 0);
+        const meId = localStorage.getItem('userId');
+        setLiked(data.likes?.some((uid) => uid === meId));
         setEditForm({
           title: data.title,
           type: data.type,
@@ -51,108 +52,174 @@ export default function AssetDetail() {
           removeImages: [],
           removeFiles: [],
           newImages: [],
-          newFiles: []
-        })
+          newFiles: [],
+        });
       } catch (err) {
-        console.error(err)
-        setError('No se pudo cargar el detalle del asset')
+        console.error(err);
+        setError('No se pudo cargar el detalle del asset');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchAsset()
-  }, [id])
+    fetchAsset();
+  }, [id]);
 
-  const handleSubmitComment = async e => {
-    e.preventDefault()
-    if (!newComment.trim()) return
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  // Configuración de dropzone para archivos
+  const {
+    getRootProps: getFileRootProps,
+    getInputProps: getFileInputProps,
+    isDragActive: isFileDragActive,
+    isDragReject: isFileDragReject,
+  } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      const updatedFiles = acceptedFiles.map((file) => ({
+        name: file.name,
+        size: formatFileSize(file.size),
+        fileObject: file,
+      }));
+      setEditForm((prev) => ({
+        ...prev,
+        newFiles: [...prev.newFiles, ...updatedFiles],
+      }));
+    },
+    accept: {
+      'application/zip': ['.zip', '.rar'],
+      'application/x-rar-compressed': ['.rar'],
+      'model/gltf-binary': ['.glb'],
+      'audio/mpeg': ['.mp3'],
+      'video/mp4': ['.mp4'],
+      'application/octet-stream': ['.unitypackage'],
+    },
+    maxFiles: 10,
+  });
+
+  // Configuración de dropzone para imágenes
+  const {
+    getRootProps: getImageRootProps,
+    getInputProps: getImageInputProps,
+    isDragActive: isImageDragActive,
+    isDragReject: isImageDragReject,
+  } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      const updatedImages = acceptedFiles.map((file) => ({
+        name: file.name,
+        size: formatFileSize(file.size),
+        fileObject: file,
+      }));
+      setEditForm((prev) => ({
+        ...prev,
+        newImages: [...prev.newImages, ...updatedImages],
+      }));
+    },
+    accept: {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+      'image/gif': ['.gif'],
+    },
+    maxFiles: 5,
+  });
+
+  const handleSubmitComment = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
 
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token');
       const res = await fetch(`/api/assets/${id}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ text: newComment.trim() })
-      })
-      if (!res.ok) throw new Error(`Error ${res.status}`)
-      const updatedComments = await res.json()
-      setComments(updatedComments)
-      setNewComment('')
+        body: JSON.stringify({ text: newComment.trim() }),
+      });
+      if (!res.ok) throw new Error(`Error ${res.status}`);
+      const updatedComments = await res.json();
+      setComments(updatedComments);
+      setNewComment('');
     } catch (err) {
-      console.error(err)
-      alert('Error al enviar el comentario')
+      console.error(err);
+      alert('Error al enviar el comentario');
     }
-  }
+  };
 
   const handleToggleLike = async () => {
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token');
       const res = await fetch(`/api/assets/${id}/likes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      if (!res.ok) throw new Error(`Error ${res.status}`)
-      const { likesCount: newCount, liked: nowLiked } = await res.json()
-      setLikesCount(newCount)
-      setLiked(nowLiked)
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) throw new Error(`Error ${res.status}`);
+      const { likesCount: newCount, liked: nowLiked } = await res.json();
+      setLikesCount(newCount);
+      setLiked(nowLiked);
     } catch (err) {
-      console.error(err)
-      alert('Error al procesar like')
+      console.error(err);
+      alert('Error al procesar like');
     }
-  }
+  };
 
   const handleEditToggle = () => {
-    setEditMode(!editMode)
-  }
+    setEditMode(!editMode);
+  };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setEditForm(prev => ({ ...prev, [name]: value }))
-  }
-
-  const handleFileChange = (e, field) => {
-    const files = Array.from(e.target.files)
-    setEditForm(prev => ({ ...prev, [field]: files }))
-  }
+    const { name, value } = e.target;
+    setEditForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleRemoveItem = (url, field) => {
-    setEditForm(prev => ({
+    setEditForm((prev) => ({
       ...prev,
-      [field]: [...prev[field], url]
-    }))
-  }
+      [field]: [...prev[field], url],
+    }));
+  };
+
+  const removeNewFile = (index, field) => {
+    setEditForm((prev) => {
+      const updated = [...prev[field]];
+      updated.splice(index, 1);
+      return { ...prev, [field]: updated };
+    });
+  };
 
   const handleSubmitEdit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      const token = localStorage.getItem('token')
-      const formData = new FormData()
-      formData.append('title', editForm.title)
-      formData.append('type', editForm.type)
-      formData.append('description', editForm.description)
-      formData.append('removeImages', JSON.stringify(editForm.removeImages))
-      formData.append('removeFiles', JSON.stringify(editForm.removeFiles))
-      editForm.newImages.forEach(file => formData.append('images', file))
-      editForm.newFiles.forEach(file => formData.append('files', file))
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      formData.append('title', editForm.title);
+      formData.append('type', editForm.type);
+      formData.append('description', editForm.description);
+      formData.append('removeImages', JSON.stringify(editForm.removeImages));
+      formData.append('removeFiles', JSON.stringify(editForm.removeFiles));
+      editForm.newImages.forEach((file) => formData.append('images', file.fileObject));
+      editForm.newFiles.forEach((file) => formData.append('files', file.fileObject));
 
       const res = await fetch(`/api/assets/${id}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
         },
-        body: formData
-      })
-      if (!res.ok) throw new Error(`Error ${res.status}`)
-      const updatedAsset = await res.json()
-      setAsset(updatedAsset)
-      setEditMode(false)
+        body: formData,
+      });
+      if (!res.ok) throw new Error(`Error ${res.status}`);
+      const updatedAsset = await res.json();
+      setAsset(updatedAsset);
+      setEditMode(false);
       setEditForm({
         title: updatedAsset.title,
         type: updatedAsset.type,
@@ -160,29 +227,29 @@ export default function AssetDetail() {
         removeImages: [],
         removeFiles: [],
         newImages: [],
-        newFiles: []
-      })
-      alert('Asset actualizado con éxito')
-      navigate(`/assets/${id}`)
+        newFiles: [],
+      });
+      alert('Asset actualizado con éxito');
+      navigate(`/assets/${id}`);
     } catch (err) {
-      console.error(err)
-      alert('Error al actualizar el asset')
+      console.error(err);
+      alert('Error al actualizar el asset');
     }
-  }
+  };
 
-  if (loading) return <p>Cargando detalle…</p>
-  if (error) return <p className="error">{error}</p>
-  if (!asset) return <p>Asset no encontrado</p>
+  if (loading) return <p>Cargando detalle…</p>;
+  if (error) return <p className="error">{error}</p>;
+  if (!asset) return <p>Asset no encontrado</p>;
 
   const assetTypes = [
     '2D', '3D', 'Pixel Art', 'Isométrico', 'UI', 'Iconos', 'Audio',
-    'Música', 'VFX', 'Animaciones', 'Fondos', 'Tilesets', 'Add-Ons', 'Otros'
-  ]
+    'Música', 'VFX', 'Animaciones', 'Fondos', 'Tilesets', 'Add-Ons', 'Otros',
+  ];
 
   return (
     <div className="asset-detail container">
       <Link to="/my-assets" className="back-link">
-        <FaArrowLeft /> Volver a Mis Assets
+        <FiArrowLeft /> Volver a Mis Assets
       </Link>
 
       {!editMode ? (
@@ -190,7 +257,7 @@ export default function AssetDetail() {
           <div className="asset-header">
             <h2>{asset.title}</h2>
             <button onClick={handleEditToggle} className="edit-btn">
-              <FaEdit /> Editar
+              <FiUpload /> Editar
             </button>
           </div>
           <p className="type">{asset.type}</p>
@@ -201,23 +268,23 @@ export default function AssetDetail() {
           <div className="media-section">
             {asset.image && (
               <div className="media-item">
-                <FaImage /> Imagen principal
+                <FiImage /> Imagen principal
                 <img src={asset.image} alt={asset.title} />
               </div>
             )}
             {asset.images?.length > 0 && (
               <div className="media-item">
-                <FaImage /> Todas las imágenes
+                <FiImage /> Todas las imágenes
                 <div className="media-list">
                   {asset.images.map((url, i) => (
-                    <img key={i} src={url} alt={`${asset.title}-${i}`} />
+                    <img key={i} src={url} altProviders={`${asset.title}-${i}`} />
                   ))}
                 </div>
               </div>
             )}
             {asset.file && (
               <div className="media-item">
-                <FaFile /> Archivo principal:
+                <FiFile /> Archivo principal:
                 <a href={asset.file} download target="_blank" rel="noreferrer">
                   Descargar
                 </a>
@@ -225,7 +292,7 @@ export default function AssetDetail() {
             )}
             {asset.files?.length > 0 && (
               <div className="media-item">
-                <FaFile /> Todos los archivos:
+                <FiFile /> Todos los archivos:
                 <ul className="file-list">
                   {asset.files.map((f, i) => (
                     <li key={i}>
@@ -265,7 +332,7 @@ export default function AssetDetail() {
               onChange={handleInputChange}
               required
             >
-              {assetTypes.map(type => (
+              {assetTypes.map((type) => (
                 <option key={type} value={type}>{type}</option>
               ))}
             </select>
@@ -276,6 +343,7 @@ export default function AssetDetail() {
               name="description"
               value={editForm.description}
               onChange={handleInputChange}
+              rows="10"
               required
             />
           </div>
@@ -290,18 +358,60 @@ export default function AssetDetail() {
                     onClick={() => handleRemoveItem(url, 'removeImages')}
                     className="remove-btn"
                   >
-                    <FaTrash /> Eliminar
+                    <FiX /> Eliminar
                   </button>
                 </div>
               ))}
             </div>
             <label>Añadir nuevas imágenes</label>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(e) => handleFileChange(e, 'newImages')}
-            />
+            <div
+              {...getImageRootProps()}
+              className={`dropzone ${isImageDragActive ? 'active' : ''} ${isImageDragReject ? 'reject' : ''}`}
+            >
+              <input {...getImageInputProps()} />
+              <div className="dropzone-content">
+                <FiImage size={48} className="dropzone-icon" />
+                {isImageDragActive ? (
+                  <p className="dropzone-text">Suelta las imágenes aquí</p>
+                ) : isImageDragReject ? (
+                  <p className="dropzone-text">Tipo de imagen no soportado</p>
+                ) : (
+                  <>
+                    <p className="dropzone-text">Arrastra y suelta imágenes aquí</p>
+                    <p className="dropzone-subtext">
+                      Formatos aceptados: .jpg, .jpeg, .png, .gif
+                      <br />Máximo: 5 imágenes
+                    </p>
+                  </>
+                )}
+                <button type="button" className="btn btn-outline">
+                  <FiUpload className="btn-icon" /> Seleccionar imágenes
+                </button>
+              </div>
+            </div>
+            {editForm.newImages.length > 0 && (
+              <div className="file-list">
+                <h4>Imágenes nuevas:</h4>
+                <ul>
+                  {editForm.newImages.map((image, index) => (
+                    <li key={index}>
+                      <div className="file-info">
+                        <FiImage className="file-icon" />
+                        <span className="file-name">{image.name}</span>
+                        <span className="file-size">{image.size}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeNewFile(index, 'newImages')}
+                        className="remove-btn"
+                      >
+                        <FiX />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
           <div className="form-group">
             <label>Archivos actuales</label>
@@ -314,21 +424,67 @@ export default function AssetDetail() {
                     onClick={() => handleRemoveItem(f, 'removeFiles')}
                     className="remove-btn"
                   >
-                    <FaTrash /> Eliminar
+                    <FiX /> Eliminar
                   </button>
                 </li>
               ))}
             </ul>
             <label>Añadir nuevos archivos</label>
-            <input
-              type="file"
-              multiple
-              onChange={(e) => handleFileChange(e, 'newFiles')}
-            />
+            <div
+              {...getFileRootProps()}
+              className={`dropzone ${isFileDragActive ? 'active' : ''} ${isFileDragReject ? 'reject' : ''}`}
+            >
+              <input {...getFileInputProps()} />
+              <div className="dropzone-content">
+                <FiFile size={48} className="dropzone-icon" />
+                {isFileDragActive ? (
+                  <p className="dropzone-text">Suelta los archivos aquí</p>
+                ) : isFileDragReject ? (
+                  <p className="dropzone-text">Tipo de archivo no soportado</p>
+                ) : (
+                  <>
+                    <p className="dropzone-text">Arrastra y suelta archivos aquí</p>
+                    <p className="dropzone-subtext">
+                      Formatos aceptados:
+                      <br />• Modelos 3D (.glb)
+                      <br />• Audio (.mp3)
+                      <br />• Video (.mp4)
+                      <br />Máximo: 10 archivos
+                    </p>
+                  </>
+                )}
+                <button type="button" className="btn btn-outline">
+                  <FiUpload className="btn-icon" /> Seleccionar archivos
+                </button>
+              </div>
+            </div>
+            {editForm.newFiles.length > 0 && (
+              <div className="file-list">
+                <h4>Archivos nuevos:</h4>
+                <ul>
+                  {editForm.newFiles.map((file, index) => (
+                    <li key={index}>
+                      <div className="file-info">
+                        <FiFile className="file-icon" />
+                        <span className="file-name">{file.name}</span>
+                        <span className="file-size">{file.size}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeNewFile(index, 'newFiles')}
+                        className="remove-btn"
+                      >
+                        <FiX />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
           <div className="form-actions">
             <button type="submit" className="save-btn">
-              <FaSave /> Guardar
+              <FiUpload /> Guardar
             </button>
             <button type="button" onClick={handleEditToggle} className="cancel-btn">
               Cancelar
@@ -337,5 +493,5 @@ export default function AssetDetail() {
         </form>
       )}
     </div>
-  )
+  );
 }
