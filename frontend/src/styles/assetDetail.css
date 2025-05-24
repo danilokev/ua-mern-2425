@@ -66,3 +66,193 @@
 .asset-detail .description h3 {
   margin-bottom: .5rem;
 }
+
+
+
+/* A partir de aquí es para editar asset */
+.asset-detail.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.asset-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-btn:hover {
+  background: #0056b3;
+}
+
+.type, .date {
+  color: #666;
+  margin: 10px 0;
+}
+
+.media-section {
+  margin: 20px 0;
+}
+
+.media-item {
+  margin-bottom: 20px;
+}
+
+.media-item img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.media-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.media-list img {
+  width: 150px;
+  height: auto;
+}
+
+.file-list {
+  list-style: none;
+  padding: 0;
+}
+
+.file-list li {
+  margin: 10px 0;
+}
+
+.file-list a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.file-list a:hover {
+  text-decoration: underline;
+}
+
+.description {
+  margin-top: 20px;
+}
+
+.description h3 {
+  margin-bottom: 10px;
+}
+
+.edit-form {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-group textarea {
+  min-height: 100px;
+}
+
+.form-group select {
+  height: 38px;
+}
+
+.media-item.editable {
+  position: relative;
+  display: inline-block;
+}
+
+.remove-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.remove-btn:hover {
+  background: #c82333;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.save-btn,
+.cancel-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.save-btn {
+  background: #28a745;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #218838;
+}
+
+.cancel-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #5a6268;
+}
