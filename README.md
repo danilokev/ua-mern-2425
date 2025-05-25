@@ -29,10 +29,21 @@ _Una vez clonado el respositorio, debemos instalar y actualizar todas las biblio
 ```sh
 cd ua-mern-2425
 npm i
+cd frontend 
+npm i
 ```
 
 _Para poner el proyecto en marcha, ejecutaremos el siguiente comando:_
 
 ```sh
-npm run server
+npm run dev
 ```
+
+## Autores ✒️
+
+_Todos aquellos que ayudaron a levantar el proyecto desde sus inicios:_
+
+* **Marcos López Mira** - [MarcosLopezMira](https://github.com/MarcosLopezMira)
+* **Mario Giménez López-Torres** - [mgl126](https://github.com/mgl126)
+* **Alfonso López Laforet** - [AlfonsoLafo](https://github.com/AlfonsoLafo)
+* **Kevin D. Analuisa Ortiz** - [danilokev](https://github.com/danilokev)
