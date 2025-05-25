@@ -57,8 +57,6 @@ Nuestra aplicación ha sido desarrollada con la **pila MERN**, que consiste en:
 
 ## Autores ✒️
 
-_Todos aquellos que ayudaron a levantar el proyecto desde sus inicios:_
-
 * **Marcos López Mira** - [MarcosLopezMira](https://github.com/MarcosLopezMira)
 * **Mario Giménez López-Torres** - [mgl126](https://github.com/mgl126)
 * **Alfonso López Laforet** - [AlfonsoLafo](https://github.com/AlfonsoLafo)
