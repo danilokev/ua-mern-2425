@@ -39,6 +39,22 @@ _Para poner el proyecto en marcha, ejecutaremos el siguiente comando:_
 npm run dev
 ```
 
+## Construido con 🛠️
+
+Nuestra aplicación ha sido desarrollada con la **pila MERN**, que consiste en:
+
+* **MongoDB**: Como nuestra base de datos NoSQL:
+    * [`mongodb`](https://www.mongodb.com/docs/drivers/node/current/) - El controlador oficial de MongoDB para Node.js, utilizado para interactuar con la base de datos desde el lado del servidor.
+    * [`mongojs`](https://github.com/mongo-js/mongojs#readme) - Un módulo que proporciona una interfaz simplificada para el controlador de MongoDB, facilitando las operaciones con la base de datos.
+* **Express.js**: El *framework* de aplicaciones web para Node.js, formando el *backend* de nuestra aplicación.
+    * [`express`](https://expressjs.com/es/) - Infraestructura de aplicaciones web Node.js mínima y flexible que proporciona un conjunto sólido de características para el desarrollo de APIs.
+    * [`cors`](https://github.com/expressjs/cors#readme) - Middleware para Express que habilita el *Cross-Origin Resource Sharing* (CORS), permitiendo solicitudes de diferentes orígenes.
+    * [`helmet`](https://helmetjs.github.io/) - Un conjunto de middlewares para Express que ayudan a proteger la aplicación configurando varias cabeceras HTTP relacionadas con la seguridad.
+    * [`morgan`](https://github.com/expressjs/morgan#readme) - Middleware de registro de solicitudes HTTP para Node.js, útil para el *debugging* y el seguimiento de la actividad del servidor.
+    * [`nodemon`](https://www.npmjs.com/package/nodemon) - Una herramienta de desarrollo que monitorea los cambios en los archivos de la aplicación y reinicia automáticamente el servidor de Node.js.
+* **React** (componente *frontend* de la pila MERN): La biblioteca JavaScript para construir interfaces de usuario, encargada del *frontend* interactivo de la aplicación.
+* **Node.js**: El entorno de ejecución de JavaScript del lado del servidor que impulsa nuestra aplicación.
+
 ## Autores ✒️
 
 _Todos aquellos que ayudaron a levantar el proyecto desde sus inicios:_
