@@ -1,5 +1,5 @@
 # UA Asset Manager
-Una plataforma centralizada donde desarrolladores pueden **explorar, compartir y descargar** recursos digitales de alta calidad para sus proyectos de videojuegos.
+Una plataforma centralizada donde desarrolladores pueden **explorar y descargar** recursos digitales de alta calidad para sus proyectos de videojuegos.
 
 ### 📦 Tipos de Assets Soportados
 - **Gráficos**: Imágenes en múltiples formatos (PNG, JPG, SVG, etc.)
